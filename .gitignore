@@ -1,0 +1,12 @@
+*~
+*.swp
+elpa/
+neotree/
+php-mode/
+web-mode/
+yaml-mode/
+flymake/
+geben/
+/ac-comphist.dat
+/semanticdb/
+/session.*
