@@ -33,24 +33,27 @@
 (add-hook 'php-mode-hook
             '(lambda ()
                (auto-complete-mode t)
+	       (when (derived-mode-p 'php-mode)
+		 (ggtags-mode 1))	       
                (require 'ac-php)
                (setq ac-sources  '(ac-source-php ) )
                (yas-global-mode 1)
                (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
                (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-	       (when (derived-mode-p 'php-mode)
-		 (ggtags-mode 1))
                )
 	    '(lambda () (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 	    )
 
 
+(autoload 'scss-mode "scss-mode")
+(add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
 
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))	     
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
 
+(require 'twig-mode)
+(add-to-list 'auto-mode-alist '("\\.html.twig\\'" . twig-mode))
 
 (require 'yaml-mode)
     (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
