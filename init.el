@@ -17,7 +17,8 @@
 (setq neo-window-width 40)
 
 (setq projectile-switch-project-action 'neotree-projectile-action)
-
+(setq projectile-keymap-prefix (kbd "C-c C-p"))
+(projectile-global-mode)
 
 (require 'php-mode)
 (setq auto-mode-alist
@@ -60,24 +61,9 @@
 
 (autoload 'geben "geben" "DBGp protocol frontend, a script debugger" t)
 
-
-(dolist (func '(tabbar-mode tabbar-forward-tab tabbar-forward-group tabbar-backward-tab tabbar-backward-group))
-  (autoload func "tabbar" "Tabs at the top of buffers and easy control-tab navigation"))
-
-(defmacro defun-prefix-alt (name on-no-prefix on-prefix &optional do-always)
-  `(defun ,name (arg)
-     (interactive "P")
-     ,do-always
-     (if (equal nil arg)
-	 ,on-no-prefix
-       ,on-prefix)))
-
-(defun-prefix-alt shk-tabbar-next (tabbar-forward-tab) (tabbar-forward-group) (tabbar-mode 1))
-(defun-prefix-alt shk-tabbar-prev (tabbar-backward-tab) (tabbar-backward-group) (tabbar-mode 1))
-
-(global-set-key [(control tab)] 'shk-tabbar-next)
-(global-set-key [(control shift tab)] 'shk-tabbar-prev)
-
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
 
 (load-theme 'tango-dark t)
 
