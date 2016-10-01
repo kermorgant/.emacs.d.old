@@ -85,6 +85,16 @@
   '(("css" . (ac-source-css-property))
     ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
 (setq web-mode-code-indent-offset 2)
+(setq web-mode-css-indent-offset 2)
+(setq web-mode-markup-indent-offset 2)
+
+;; padding
+;; For <style> parts
+(setq web-mode-style-padding 1)
+;; For <script> parts
+(setq web-mode-script-padding 1)
+;; For multi-line blocks
+(setq web-mode-block-padding 0)
 
 (require 'twig-mode)
 
