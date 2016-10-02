@@ -8,6 +8,12 @@
 
 (global-font-lock-mode 1)
 
+(global-set-key (kbd "C--") 'ace-window)
+
+(require 'swbuff)
+(global-set-key [(control tab)] 'swbuff-switch-to-next-buffer)
+
+;;(windmove-default-keybindings)
 
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
@@ -53,29 +59,30 @@
 	     ))
 
 (add-hook 'php-mode-hook
-          '(lambda ()	  
+          '(lambda ()
 	     (require 'company-php)
 	     (company-mode t)
              (add-to-list 'company-backends 'company-ac-php-backend )
 	     ))
 
 (add-hook 'php-mode-hook
-          '(lambda ()	  
+          '(lambda ()
 	     (when (derived-mode-p 'php-mode)
-	       (ggtags-mode 1))	       
+	       (ggtags-mode 1))
 	     )
 	  )
 (add-hook 'php-mode-hook
 	  '(lambda ()
 	     (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 	  )
+(add-hook 'php-mode-hook 'php-enable-symfony2-coding-style)
 
 
 (autoload 'scss-mode "scss-mode")
 (add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
 
 (require 'web-mode)
-(add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))	     
+(add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -125,7 +132,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company-php company org yaml-mode web-mode twig-mode tabbar sass-mode rainbow-mode phpcbf php+-mode neotree ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css ac-php))))
+    (swbuff ace-window company-php company org yaml-mode web-mode twig-mode tabbar sass-mode rainbow-mode phpcbf php+-mode neotree ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css ac-php))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
