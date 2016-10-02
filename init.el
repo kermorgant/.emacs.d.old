@@ -13,7 +13,10 @@
 (require 'swbuff)
 (global-set-key [(control tab)] 'swbuff-switch-to-next-buffer)
 
-;;(windmove-default-keybindings)
+(global-set-key (kbd "M-<left>")  'windmove-left)
+(global-set-key (kbd "M-<right>") 'windmove-right)
+(global-set-key (kbd "M-<up>")    'windmove-up)
+(global-set-key (kbd "M-<down>")  'windmove-down)
 
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
