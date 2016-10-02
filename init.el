@@ -6,6 +6,9 @@
    (package-initialize))
 ;;'("melpa-stable" . "https://stable.melpa.org/packages/")
 
+; Saving Emacs Sessions
+(desktop-save-mode 1)
+
 (global-font-lock-mode 1)
 
 (global-set-key (kbd "C--") 'ace-window)
