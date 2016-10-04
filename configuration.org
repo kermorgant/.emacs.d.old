@@ -8,8 +8,6 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
   (sensible-defaults/use-all-keybindings)
 #+END_SRC
 
-
-
 * Set personal information
 
 #+BEGIN_SRC emacs-lisp
@@ -19,8 +17,6 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
         calendar-longitude 23.44
         calendar-location-name "Raseborg, Finland")
 #+END_SRC
-
-
 
 
 * Packages repositories
@@ -35,10 +31,9 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    (package-initialize))
 #+END_SRC
 
-
 * Custom key-bindings
 
-Just a few handy functions.
+Just some handy functions.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-w") 'backward-kill-word)
@@ -49,7 +44,6 @@ Just a few handy functions.
   (global-set-key (kbd "C-c s") 'multi-term)
   (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
-
 
 * Coding
 ** Flycheck
@@ -123,12 +117,14 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
  #+END_SRC
 
 *** Web-mode
- #+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp
  (require 'web-mode)
+
  (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
  (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
  (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+
  (setq web-mode-enable-css-colorization t)
  (setq web-mode-enable-current-element-highlight t)
  (setq web-mode-ac-sources-alist
@@ -146,7 +142,7 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
  (setq web-mode-block-padding 0)
 
 
- #+END_SRC
+#+END_SRC
 *** CSS & SCSS
  #+BEGIN_SRC emacs-lisp
  (add-hook 'css-mode-hook
@@ -179,7 +175,6 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
   (projectile-global-mode)
 #+END_SRC
 
-
 ** Window movements
 
 *** TODO Fix that in org-mode
@@ -191,9 +186,11 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 (global-set-key (kbd "M-<down>")  'windmove-down)
 #+END_SRC
 
-
-
 * UI
+
+#+BEGIN_SRC emacs-lisp
+(global-font-lock-mode 1)
+#+END_SRC
 
 ** Neotree
 
@@ -222,6 +219,7 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
 
 #+BEGIN_SRC emacs-lisp
+
   (when window-system
     (setq solarized-use-variable-pitch nil)
     (setq solarized-height-plus-1 1.0)
@@ -241,4 +239,27 @@ pairing or presenting code.
 #+BEGIN_SRC emacs-lisp
   (when window-system
     (global-hl-line-mode))
+#+END_SRC
+
+* Org-mode
+
+outline of pretty bullets instead of a list of asterisks.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook
+          (lambda ()
+            (org-bullets-mode t)))
+#+END_SRC
+
+Use syntax highlighting in source blocks while editing.
+
+
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t)
+#+END_SRC
+
+I like seeing a little downward-pointing arrow instead of the usual ellipsis (...) that org displays when there’s stuff under a header.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-ellipsis "⤵")
 #+END_SRC
