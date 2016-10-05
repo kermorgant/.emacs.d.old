@@ -10,3 +10,7 @@ geben/
 /ac-comphist.dat
 /semanticdb/
 /session.*
+/.emacs.desktop.lock
+/ido.last
+/.emacs.desktop
+/projectile-bookmarks.eld
