@@ -186,6 +186,12 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 (global-set-key (kbd "M-<down>")  'windmove-down)
 #+END_SRC
 
+* Sysadmin
+** Docker
+#+BEGIN_SRC emacs-lisp
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+#+END_SRC
 * UI
 
 #+BEGIN_SRC emacs-lisp
