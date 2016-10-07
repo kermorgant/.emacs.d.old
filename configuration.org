@@ -192,17 +192,6 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
   (projectile-global-mode)
 #+END_SRC
 
-** Window movements
-
-*** TODO Fix that in org-mode
-
-#+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "M-<left>")  'windmove-left)
-(global-set-key (kbd "M-<right>") 'windmove-right)
-(global-set-key (kbd "M-<up>")    'windmove-up)
-(global-set-key (kbd "M-<down>")  'windmove-down)
-#+END_SRC
-
 * Sysadmin
 ** Docker
 #+BEGIN_SRC emacs-lisp
@@ -210,12 +199,22 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 (add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
 #+END_SRC
 * UI
+** Terminal
+#+BEGIN_SRC emacs-lisp
+   (require 'multi-term)
+   (setq multi-term-program "/bin/bash")
+#+END_SRC
 
+** Appearance
 #+BEGIN_SRC emacs-lisp
 (global-font-lock-mode 1)
 (tool-bar-mode 0)
-
 (setq-default fill-column 80)
+#+END_SRC
+** Session
+Saving Emacs Sessions
+#+BEGIN_SRC emacs-lisp
+(desktop-save-mode 1)
 #+END_SRC
 
 ** Neotree
@@ -268,6 +267,23 @@ pairing or presenting code.
 #+END_SRC
 
 * Org-mode
+** Conflicts
+*** shift-select
+shift-select works where org-mode does not have special functionality
+
+#+BEGIN_SRC emacs-lisp
+(setq org-support-shift-select t)
+#+END_SRC
+
+*** windmove function
+windmove function active in locations where Org mode does not have special
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
+#+END_SRC
+
 ** Display prefs
 outline of pretty bullets instead of a list of asterisks.
 
