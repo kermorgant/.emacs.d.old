@@ -23,7 +23,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (multi-term yaml-mode web-mode use-package twig-mode swbuff solarized-theme scss-mode projectile php-mode org-tree-slide org-bullets org neotree magit geben flycheck eide dockerfile-mode))))
+    (company-php ac-php dired-open dired+ multi-term yaml-mode web-mode use-package twig-mode swbuff solarized-theme scss-mode projectile php-mode org-tree-slide org-bullets org neotree magit geben flycheck eide dockerfile-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

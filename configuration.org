@@ -1,4 +1,3 @@
-
 * Use sensible-defaults.el
 
 Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
@@ -36,9 +35,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 #+BEGIN_SRC emacs-lisp
 (setq-default indent-tabs-mode nil)
 #+END_SRC
-
 ** Wrap paragraphs automatically
-
 #+BEGIN_SRC emacs-lisp
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'gfm-mode-hook 'turn-on-auto-fill)
@@ -46,7 +43,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 #+END_SRC
 
 ** Custom key-bindings
-Just some handy functions.
+   Just some handy functions.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-w") 'backward-kill-word)
@@ -91,22 +88,34 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
  (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
  (eval-after-load 'php-mode '(require 'php-ext))
 
- (add-hook 'php-mode-hook
-	   '(lambda ()
-	      (auto-complete-mode t)
-	      (require 'ac-php)
-	      (setq ac-sources  '(ac-source-php ) )
-	      (yas-global-mode 1)
-	      (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
-	      (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-	      ))
+(defun my-php-mode-hook ()
+  (setq indent-tabs-mode nil)
+  (setq c-basic-offset 2)
+  (setq php-template-compatibility nil)
+  (subword-mode 1)
+  (php-enable-symfony2-coding-style)
+)
+
+(add-hook 'php-mode-hook 'my-php-mode-hook)
+
+; # (add-hook 'php-mode-hook
+; #           '(lambda ()
+; #              (auto-complete-mode t)
+; #              (require 'ac-php)
+; #              (setq ac-sources  '(ac-source-php ) )
+; #              (yas-global-mode 1)
+; #              (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
+; #              (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+; #              ))
 
  (add-hook 'php-mode-hook
            '(lambda ()
 	      (require 'company-php)
 	      (company-mode t)
-              (add-to-list 'company-backends 'company-ac-php-backend )
+              (add-to-list 'company-backends 'company-ac-php-backend
+              (define-key php-mode-map  (kbd "C-SPC") 'company-complete )
 	      ))
+)
 
  (add-hook 'php-mode-hook
            '(lambda ()
@@ -118,7 +127,6 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 	   '(lambda ()
 	      (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 	   )
- (add-hook 'php-mode-hook 'php-enable-symfony2-coding-style)
  #+END_SRC
 **** Debugging
 
@@ -266,7 +274,20 @@ pairing or presenting code.
     (global-hl-line-mode))
 #+END_SRC
 
+** Windmove
+
+   #+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c C-<left>")  'windmove-left)
+(global-set-key (kbd "C-c C-<right>") 'windmove-right)
+(global-set-key (kbd "C-c C-<up>")    'windmove-up)
+(global-set-key (kbd "C-c C-<down>")  'windmove-down)
+   #+END_SRC
 * Org-mode
+** filetype association
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
+#+END_SRC
 ** Conflicts
 *** shift-select
 shift-select works where org-mode does not have special functionality
@@ -285,6 +306,7 @@ windmove function active in locations where Org mode does not have special
 #+END_SRC
 
 ** Display prefs
+
 outline of pretty bullets instead of a list of asterisks.
 
 #+BEGIN_SRC emacs-lisp
@@ -360,7 +382,6 @@ Record the time that a todo was archived.
 (setq org-log-done 'time)
 #+END_SRC
 
-
 *** Capturing tasks
 Define a few common tasks as capture templates.
 
@@ -384,4 +405,27 @@ Define a few common tasks as capture templates.
          entry
          (file org-index-file)
          "* TODO %?\n")))
+#+END_SRC
+* Dired
+Load up the assorted dired extensions.
+
+#+BEGIN_SRC emacs-lisp
+(require 'dired-x)
+(require 'dired+)
+(require 'dired-open)
+#+END_SRC
+
+Kill buffers of files/directories that are deleted in dired.
+#+BEGIN_SRC emacs-lisp
+(setq dired-clean-up-buffers-too t)
+#+END_SRC
+
+Always copy directories recursively instead of asking every time.
+#+BEGIN_SRC emacs-lisp
+(setq dired-recursive-copies 'always)
+#+END_SRC
+
+Ask before recursively deleting a directory, though.
+#+BEGIN_SRC emacs-lisp
+(setq dired-recursive-deletes 'top)
 #+END_SRC
