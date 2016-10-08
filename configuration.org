@@ -87,13 +87,18 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 
  (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
  (eval-after-load 'php-mode '(require 'php-ext))
+ (eval-after-load 'php-mode '(require 'company-php))
 
 (defun my-php-mode-hook ()
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 2)
   (setq php-template-compatibility nil)
+  (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
   (subword-mode 1)
+  (company-mode t)
   (php-enable-symfony2-coding-style)
+  (add-to-list 'company-backends 'company-my-php-backend)
+  (define-key php-mode-map  (kbd "C-SPC") 'company-complete )
 )
 
 (add-hook 'php-mode-hook 'my-php-mode-hook)
