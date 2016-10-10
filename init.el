@@ -6,10 +6,7 @@
 
 (org-babel-load-file "~/.emacs.d/configuration.org")
 
-; Saving Emacs Sessions
-(desktop-save-mode 1)
 
-(global-font-lock-mode 1)
 
 (global-set-key (kbd "C--") 'ace-window)
 
@@ -26,7 +23,9 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
+
     (scss-mode multi-term yaml-mode web-mode use-package twig-mode tabbar swbuff solarized-theme sass-mode rainbow-mode phpcbf php+-mode org-bullets org neotree magit ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css flycheck dockerfile-mode company-php ace-window ac-php))))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
