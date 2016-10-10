@@ -267,7 +267,15 @@ pairing or presenting code.
     (global-hl-line-mode))
 #+END_SRC
 
-* Org-mode
+* TODO Org-mode
+** Shortcuts
+
+#+BEGIN_SRC emacs-lisp
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map "\C-cc" 'org-capture)
+#+END_SRC
+
 ** Display prefs
 outline of pretty bullets instead of a list of asterisks.
 
@@ -290,6 +298,30 @@ I like seeing a little downward-pointing arrow instead of the usual ellipsis (..
 (setq org-ellipsis "⤵")
 #+END_SRC
 ** Task and org-capture management
+*** Capturing tasks
+Define a few common tasks as capture templates.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      '(("b" "Blog idea"
+         entry
+         (file (org-file-path "blog-ideas.org"))
+         "* TODO %?\n")
+
+        ("l" "Today I Learned..."
+         entry
+         (file+datetree (org-file-path "til.org"))
+         "* %?\n")
+
+        ("r" "Reading"
+         checkitem
+         (file (org-file-path "to-read.org")))
+
+        ("t" "Todo"
+         entry
+         (file org-index-file)
+         "* TODO %?\n")))
+#+END_SRC
 
 Store my org files in ~/org, maintain an inbox in Dropbox, define the location
 of an index file (my main todo list), and archive finished tasks in
@@ -342,30 +374,4 @@ Record the time that a todo was archived.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-log-done 'time)
-#+END_SRC
-
-
-*** Capturing tasks
-Define a few common tasks as capture templates.
-
-#+BEGIN_SRC emacs-lisp
-(setq org-capture-templates
-      '(("b" "Blog idea"
-         entry
-         (file (org-file-path "blog-ideas.org"))
-         "* TODO %?\n")
-
-        ("l" "Today I Learned..."
-         entry
-         (file+datetree (org-file-path "til.org"))
-         "* %?\n")
-
-        ("r" "Reading"
-         checkitem
-         (file (org-file-path "to-read.org")))
-
-        ("t" "Todo"
-         entry
-         (file org-index-file)
-         "* TODO %?\n")))
 #+END_SRC
