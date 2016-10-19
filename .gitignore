@@ -15,3 +15,5 @@ geben/
 /.emacs.desktop
 /projectile-bookmarks.eld
 /configuration.el
+/ede-projects.el
+/projectile.cache
