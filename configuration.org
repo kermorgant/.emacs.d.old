@@ -57,11 +57,38 @@ http://ergoemacs.org/emacs/emacs_package_system.html
   (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
 
-* Mail with mu4e
+** auto-dictionary for spell checking
+   An automatic dictionary switcher for Emacs spell checking
+   https://github.com/nschum/auto-dictionary-mode
+#+BEGIN_SRC emacs-lisp
+(require 'auto-dictionary)
+(add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
+#+END_SRC
+* Mail with emacs
+** incoming mails
+   config found here :
+   https://martinralbrecht.wordpress.com/2016/05/30/handling-email-with-emacs/
+
+   imapnotify speaks imap idle with server.
+#+BEGIN_SRC emacs-lisp
+(server-start)
+(use-package prodigy
+  :ensure t
+  :init (prodigy-define-tag
+          :name 'email
+          :ready-message "Checking Email using IMAP IDLE. Ctrl-C to shutdown.")
+  (prodigy-define-service
+    :name "imapnotify"
+    :command "imapnotify"
+    :args (list "-c" (expand-file-name "~/.emacs.d/imapnotify.gmail.js" (getenv "HOME")))
+    :tags '(email)
+    :kill-signal 'sigkill))
+#+END_SRC
 ** M4ue config
 #+BEGIN_SRC emacs-lisp
 (require 'mu4e)
 
+(global-set-key (kbd "C-c m") 'mu4e)
 (setq mu4e-maildir (expand-file-name "~/mbsync"))
 
 ;;command used to get mail
@@ -140,9 +167,6 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
 ;;store link to message if in header view, not to header query
 (setq org-mu4e-link-query-in-headers-mode nil)
-
-;; deprecated - when mail is sent, automatically convert org body to HTML
-;(setq org-mu4e-convert-to-html t)
 
 (add-hook 'message-mode-hook 'orgstruct++-mode 'append)
 (add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
