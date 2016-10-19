@@ -87,31 +87,42 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 
  (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
  (eval-after-load 'php-mode '(require 'php-ext))
- (eval-after-load 'php-mode '(require 'company-php))
+ ;(eval-after-load 'php-mode '(require 'company-php))
 
 (defun my-php-mode-hook ()
+;;  (auto-complete-mode t)
+;;  (setq ac-sources  '(ac-source-php ) )
+;;  (require 'ac-php)
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 2)
   (setq php-template-compatibility nil)
   (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
   (subword-mode 1)
   (company-mode t)
+  (ac-config-default)
+
+  (setq ac-auto-start 3)
+  (setq ac-expand-on-auto-complete t)
+;  (ac-set-trigger-key "TAB")
+ ; (setq ac-use-quick-help nil)
+
+;  (setq ac-expand-on-auto-complete t)
   (php-enable-symfony2-coding-style)
-  (add-to-list 'company-backends 'company-my-php-backend)
-  (define-key php-mode-map  (kbd "C-SPC") 'company-complete )
+ ; (add-to-list 'company-backends 'company-ac-php-backend)
+  ;(define-key php-mode-map  (kbd "C-SPC") 'company-complete )
 )
 
 (add-hook 'php-mode-hook 'my-php-mode-hook)
 
-; # (add-hook 'php-mode-hook
-; #           '(lambda ()
-; #              (auto-complete-mode t)
-; #              (require 'ac-php)
-; #              (setq ac-sources  '(ac-source-php ) )
-; #              (yas-global-mode 1)
-; #              (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
-; #              (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-; #              ))
+;  (add-hook 'php-mode-hook
+;            '(lambda ()
+;               (auto-complete-mode t)
+;               (require 'ac-php)
+;               (setq ac-sources  '(ac-source-php ) )
+;               (yas-global-mode 1)
+;               (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
+;               (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+;               ))
 
  (add-hook 'php-mode-hook
            '(lambda ()
@@ -120,7 +131,7 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
               (add-to-list 'company-backends 'company-ac-php-backend
               (define-key php-mode-map  (kbd "C-SPC") 'company-complete )
 	      ))
-)
+  )
 
  (add-hook 'php-mode-hook
            '(lambda ()
