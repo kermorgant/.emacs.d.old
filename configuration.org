@@ -103,7 +103,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (setq mu4e-headers-skip-duplicates t)
 
 (setq mu4e-maildir-shortcuts
-    '( ("/INBOX"               . ?i)
+    '( ("/primary"             . ?i)
        ("/[Gmail].Sent Mail"   . ?s)
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
