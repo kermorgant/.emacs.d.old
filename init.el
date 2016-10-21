@@ -23,7 +23,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (auto-dictionary prodigy mu4e-maildirs-extension js2-mode scss-mode multi-term yaml-mode web-mode use-package twig-mode tabbar swbuff solarized-theme sass-mode rainbow-mode phpcbf php+-mode org-bullets org neotree magit ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css flycheck dockerfile-mode company-php ace-window ac-php))))
+    (ox-html5slide ox-reveal auto-dictionary prodigy mu4e-maildirs-extension js2-mode scss-mode multi-term yaml-mode web-mode use-package twig-mode tabbar swbuff solarized-theme sass-mode rainbow-mode phpcbf php+-mode org-bullets org neotree magit ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css flycheck dockerfile-mode company-php ace-window ac-php))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
