@@ -1,3 +1,4 @@
+
 * Use sensible-defaults.el
 
 Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
@@ -317,6 +318,11 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 	      (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 	   )
  #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require 'php-auto-yasnippets)
+(define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
+#+END_SRC
 **** Debugging
 
  https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
