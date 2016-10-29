@@ -70,6 +70,11 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
 #+END_SRC
 
+** better undo
+   #+BEGIN_SRC emacs-lisp
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+   #+END_SRC
 ** Custom key-bindings
    Just some handy functions.
 
@@ -83,6 +88,9 @@ http://ergoemacs.org/emacs/emacs_package_system.html
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-<nSPC>") 'expand-abbrev)
 
+(defalias 'redo 'undo-tree-redo)
+(global-set-key (kbd "C-z") 'undo) ; 【Ctrl+z】
+;(global-set-key (kbd "C-y") 'redo) ; 【Ctrl+y】; Microsoft Windows style
 #+END_SRC
 * Mail with emacs
 ** incoming mails
@@ -478,6 +486,9 @@ Saving Emacs Sessions
 ** Neotree
 
 #+BEGIN_SRC emacs-lisp
+(require 'neotree)
+
+
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
   (interactive)
@@ -491,11 +502,12 @@ Saving Emacs Sessions
       (message "Could not find git project root."))))
 
 (global-set-key [f8] 'neotree-project-dir)
-(require 'neotree)
 
-(global-set-key [f8] 'neotree-toggle)
+;(global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 (setq neo-window-width 40)
+
+   (setq projectile-switch-project-action 'neotree-projectile-action)
  #+END_SRC
 
 ** Custom solarized-dark theme
