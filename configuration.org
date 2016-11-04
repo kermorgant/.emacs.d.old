@@ -450,6 +450,13 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
   (projectile-global-mode)
 #+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp
+(persp-mode)
+(require 'persp-projectile)
+(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+#+END_SRC
+
 * Sysadmin
 ** Docker
 #+BEGIN_SRC emacs-lisp
@@ -487,7 +494,6 @@ Saving Emacs Sessions
 
 #+BEGIN_SRC emacs-lisp
 (require 'neotree)
-
 
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
@@ -546,8 +552,17 @@ pairing or presenting code.
    #+END_SRC
 ** buffer cycling
 #+BEGIN_SRC emacs-lisp
-(require 'swbuff)
+ (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 #+END_SRC
+** frames
+ElScreen is an Emacs utility with which you can have multiple screens
+(window-configuration) on your GNU Emacs as well as GNU screen on terminal.
+https://github.com/knu/elscreen
+
+#+BEGIN_SRC emacs-lisp
+(elscreen-start)
+#+END_SRC
+
 * Org-mode
 ** Shortcuts
 
