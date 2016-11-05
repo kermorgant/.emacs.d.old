@@ -1,0 +1,95 @@
+IMAPAccount gmail
+Host imap.gmail.com
+User mikael.kermorgant@gmail.com
+PassCmd "imap-pass -g mikael.kermorgant@gmail.com"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Path ~/mbsync/gmail/
+MapInbox ~/mbsync/gmail/INBOX
+
+Channel gmail-inbox
+Master :gmail-remote:
+Slave :gmail-local:
+Patterns "INBOX"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-trash
+Master :gmail-remote:"[Gmail]/Trash"
+Slave :gmail-local:"[Gmail].Trash"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-sent
+Master :gmail-remote:"[Gmail]/Sent Mail"
+Slave :gmail-local:"[Gmail].Sent Mail"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-all
+Master :gmail-remote:"[Gmail]/All Mail"
+Slave :gmail-local:"[Gmail].All Mail"
+Create Both
+Expunge Both
+SyncState *
+
+Channel gmail-starred
+Master :gmail-remote:"[Gmail]/Starred"
+Slave :gmail-local:"[Gmail].Starred"
+Create Both
+Expunge Both
+SyncState *
+
+# GROUPS PUT TOGETHER CHANNELS, SO THAT WE CAN INVOKE
+# MBSYNC ON A GROUP TO SYNC ALL CHANNELS
+#
+# FOR INSTANCE: "mbsync gmail" GETS MAIL FROM All channels inside gmail group
+#
+Group gmail
+Channel gmail-inbox
+# Channel gmail-forums
+# Channel gmail-social
+# Channel gmail-updates
+Channel gmail-sent
+Channel gmail-trash
+Channel gmail-starred
+Channel gmail-all
+
+Group gmail-mini
+Channel gmail-inbox
+# Channel gmail-starred
+
+
+IMAPAccount yahoo
+Host imap.mail.yahoo.com
+User mkgtfr@yahoo.fr
+PassCmd "imap-pass -g mkgtfr@yahoo.fr"
+SSLType IMAPS
+CertificateFile ~/.cert/imap.mail.yahoo.com.pem
+# $ mkdir ~/.cert
+# $ openssl s_client -connect imap.mail.yahoo.com:993 -showcerts 2>&1 < /dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sed -ne '1,/-END CERTIFICATE-/p' > ~/.cert/imap.mail.yahoo.com.pem
+
+IMAPStore yahoo-remote
+Account yahoo
+
+MaildirStore yahoo-local
+Path ~/mbsync/yahoo/
+MapInbox ~/mbsync/yahoo/Inbox
+
+Channel yahoo-inbox
+Master :yahoo-remote:
+Slave :yahoo-local:Inbox
+Create Both
+Expunge Both
+SyncState *
+
+Group yahoo
+Channel yahoo-inbox

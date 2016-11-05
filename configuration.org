@@ -71,6 +71,11 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode t)))
 #+END_SRC
 
+** better undo
+   #+BEGIN_SRC emacs-lisp
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+   #+END_SRC
 ** Custom key-bindings
    Just some handy functions.
 
@@ -82,8 +87,11 @@ http://ergoemacs.org/emacs/emacs_package_system.html
   (global-set-key (kbd "M-#") 'sort-lines)
   (global-set-key (kbd "C-c s") 'multi-term)
   (global-set-key (kbd "C-x g") 'magit-status)
-  (global-set-key (kbd "C-<SPC>") 'expand-abbrev)
+  (global-set-key (kbd "C-<nSPC>") 'expand-abbrev)
 
+(defalias 'redo 'undo-tree-redo)
+;(global-set-key (kbd "C-z") 'undo) ; 【Ctrl+z】
+;(global-set-key (kbd "C-y") 'redo) ; 【Ctrl+y】; Microsoft Windows style
 #+END_SRC
 * Mail with emacs
 ** incoming mails
@@ -107,17 +115,17 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 #+END_SRC
 ** M4ue config
 *** global settings
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (require 'mu4e)
 
 (global-set-key (kbd "C-c m") 'mu4e)
-(setq mu4e-maildir (expand-file-name "~/mbsync/gmail"))
+(setq mu4e-maildir (expand-file-name "~/mbsync"))
 
 ;;command used to get mail
 ;; use this for testing
 ;;(setq mu4e-get-mail-command "true")
 ;; use this to sync with mbsync
-(setq mu4e-get-mail-command "mbsync gmail")
+;(setq mu4e-get-mail-command "mbsync gmail")
 
 
 ;;rename files when moving
@@ -129,7 +137,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (setq smtpmail-queue-mail nil  ;; start in normal mode
       smtpmail-queue-dir   "~/mbsync/gmail/queue/cur")
 
-(setq mu4e-attachment-dir  "~/Downloads")
+(setq mu4e-attachment-dir  "~/Downloads/Attachments")
 
 (setq message-kill-buffer-on-exit t)
 
@@ -139,28 +147,76 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 ;            "My settings for message composition."
 ;            (set-fill-column 72)
 ;            (flyspell-mode)))
-#+END_SRC
-*** gmail config
+    #+END_SRC
+*** accounts config
     #+BEGIN_SRC emacs-lisp
-(setq mu4e-drafts-folder "/[Gmail].Drafts")
-(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-(setq mu4e-trash-folder  "/[Gmail].Trash")
+  (setq mu4e-contexts
+    `( ,(make-mu4e-context
+	  :name "gmail"
+	  :enter-func (lambda () (mu4e-message "Switch to the Private context"))
+	  ;; leave-func not defined
+	  :match-func (lambda (msg)
+			(when msg
+			  (mu4e-message-contact-field-matches msg
+			    :to "mikael.kermorgant@gmail.com")))
+	  :vars '( (user-mail-address	   . "mikael.kermorgant@gmail.com"  )
+		   (user-full-name	   . "Mikael Kermorgant" )
+		   (mu4e-compose-signature . (concat "--\n" "Mikael Kermorgant"))
+                   (mu4e-drafts-folder .     "/gmail/[Gmail].Drafts")
+                   (mu4e-sent-folder   .     "/gmail/[Gmail].Sent Mail")
+                   (mu4e-trash-folder  .     "/gmail/[Gmail].Trash")
+                   (mu4e-headers-skip-duplicates . t)
+                   (mu4e-get-mail-command  . "mbsync gmail")
+                   (mu4e-maildir-shortcuts .
+                     (("/gmail/INBOX"               . ?i)
+                      ("/gmail/[Gmail]/Starred"     . ?S)
+                      ("/gmail/[Gmail].Sent Mail"   . ?s)
+                      ("/gmail/[Gmail].Trash"       . ?t)
+                      ("/gmail/[Gmail].All Mail"    . ?a)))
+                   (mu4e-sent-messages-behavior 'delete)
+))
+       ,(make-mu4e-context
+	  :name "Yahoo"
+	  :enter-func (lambda () (mu4e-message "Switch to the Yahoo context"))
+	  ;; leave-fun not defined
+	  :match-func (lambda (msg)
+			(when msg
+			  (mu4e-message-contact-field-matches msg
+			    :to "mikael.kermorgant@yahoo.fr")))
+	  :vars '( (user-mail-address	     . "mikael.kermorgant@yahoo.fr." )
+		   (user-full-name	    . "Mikael Kermorgant" )
+		   (mu4e-compose-signature . (concat "Mikael Kermorgant"))
+                   (mu4e-drafts-folder .     "/yahoo/drafts")
+                   (mu4e-sent-folder   .     "/yahoo/sent")
+                   (mu4e-trash-folder  .     "/yahoo/trash")
+                   (mu4e-get-mail-command  . "mbsync yahoo")
+                   (mu4e-maildir-shortcuts .
+                     (("/yahoo/Inbox"               . ?i)))
+
+))))
+
+  ;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
+  ;; guess or ask the correct context, e.g.
+
+  ;; start with the first (default) context;
+  ;; default is to ask-if-none (ask when there's no context yet, and none match)
+  ;; (setq mu4e-context-policy 'pick-first)
+
+  ;; compose with the current context is no context matches;
+  ;; default is to ask
+  (setq mu4e-compose-context-policy nil)
+    #+END_SRC
+
+    #+BEGIN_SRC emacs-lisp
 (setq mu4e-headers-skip-duplicates t)
 
-(setq mu4e-maildir-shortcuts
-    '( ("/primary"             . ?i)
-       ("/forums"              . ?f)
-       ("/updates"             . ?u)
-       ("/[Gmail]/Starred"     . ?S)
-       ("/[Gmail].Sent Mail"   . ?s)
-       ("/[Gmail].Trash"       . ?t)
-       ("/[Gmail].All Mail"    . ?a)))
+
 
 ;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
+;(setq mu4e-sent-messages-behavior 'delete)
     #+END_SRC
 *** kgtech config
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
    (setq mu4e-compose-signature
     (concat
       "Mikael Kermorgant\n"
@@ -400,6 +456,13 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
   (projectile-global-mode)
 #+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp
+(persp-mode)
+(require 'persp-projectile)
+(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+#+END_SRC
+
 * Sysadmin
 ** Docker
 #+BEGIN_SRC emacs-lisp
@@ -436,6 +499,8 @@ Saving Emacs Sessions
 ** Neotree
 
 #+BEGIN_SRC emacs-lisp
+(require 'neotree)
+
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
   (interactive)
@@ -449,11 +514,12 @@ Saving Emacs Sessions
       (message "Could not find git project root."))))
 
 (global-set-key [f8] 'neotree-project-dir)
-(require 'neotree)
 
-(global-set-key [f8] 'neotree-toggle)
+;(global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 (setq neo-window-width 40)
+
+   (setq projectile-switch-project-action 'neotree-projectile-action)
  #+END_SRC
 
 ** Custom solarized-dark theme
@@ -492,55 +558,82 @@ pairing or presenting code.
    #+END_SRC
 ** buffer cycling
 #+BEGIN_SRC emacs-lisp
-(require 'swbuff)
+ (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 #+END_SRC
+** frames
+   ElScreen is an Emacs utility with which you can have multiple screens
+   (window-configuration) on your GNU Emacs as well as GNU screen on terminal.
+   https://github.com/knu/elscreen
+
+   #+BEGIN_SRC emacs-lisp
+(elscreen-start)
+   #+END_SRC
+
+** ido
+*** vertical mode
+    Makes ido-mode display vertically.
+    #+BEGIN_SRC emacs-lisp
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+    #+END_SRC
+*** flx-ido
+    #+BEGIN_SRC emacs-lisp
+(require 'flx-ido)
+(ido-mode 1)
+(ido-everywhere 1)
+(flx-ido-mode 1)
+; disable ido faces to see flx highlights.
+(setq ido-enable-flex-matching t)
+(setq ido-use-faces nil)
+    #+END_SRC
 * Org-mode
 ** Shortcuts
-
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (define-key global-map "\C-cc" 'org-capture)
-#+END_SRC
+   #+END_SRC
 ** filetype association
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
-#+END_SRC
+   #+END_SRC
 ** Conflicts
 *** shift-select
-shift-select works where org-mode does not have special functionality
+    shift-select works where org-mode does not have special functionality
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (setq org-support-shift-select t)
-#+END_SRC
+    #+END_SRC
 ** Display prefs
 
-outline of pretty bullets instead of a list of asterisks.
+   outline of pretty bullets instead of a list of asterisks.
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
           (lambda ()
             (org-bullets-mode t)))
-#+END_SRC
+   #+END_SRC
 
-Use syntax highlighting in source blocks while editing.
+   Use syntax highlighting in source blocks while editing.
 
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
-#+END_SRC
+   #+END_SRC
 
-I like seeing a little downward-pointing arrow instead of the usual ellipsis (...) that org displays when there’s stuff under a header.
+   I like seeing a little downward-pointing arrow instead of the usual ellipsis (...) that org displays when there’s stuff under a header.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-ellipsis "⤵")
 #+END_SRC
 ** Task and org-capture management
 *** Capturing tasks
-Define a few common tasks as capture templates.
+    Define a few common tasks as capture templates.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       '(("b" "Blog idea"
          entry
@@ -560,7 +653,7 @@ Define a few common tasks as capture templates.
          entry
          (file org-index-file)
          "* TODO %?\n")))
-#+END_SRC
+    #+END_SRC
 
 ** Latex export
    useful source comments here :
@@ -791,9 +884,9 @@ showstringspaces=false}
     #+END_SRC
 
 ** presentation
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (setq org-reveal-root "file:///~/.emacs.d/reveal.js")
-#+END_SRC
+   #+END_SRC
 * Dired
 Load up the assorted dired extensions.
 
