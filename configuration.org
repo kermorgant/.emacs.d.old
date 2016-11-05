@@ -63,12 +63,12 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 
-** auto-dictionary for spell checking
+** Spell checking
    An automatic dictionary switcher for Emacs spell checking
    https://github.com/nschum/auto-dictionary-mode
 #+BEGIN_SRC emacs-lisp
 (require 'auto-dictionary)
-(add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
+(add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode t)))
 #+END_SRC
 
 ** Custom key-bindings
