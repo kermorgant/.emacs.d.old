@@ -458,9 +458,11 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
 
 #+BEGIN_SRC emacs-lisp
-(persp-mode)
-(require 'persp-projectile)
-(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+
+;(persp-mode)
+
+;(require 'persp-projectile)
+;(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
 #+END_SRC
 
 * Sysadmin
@@ -494,6 +496,9 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 Saving Emacs Sessions
 #+BEGIN_SRC emacs-lisp
 (desktop-save-mode 1)
+
+; this one lets elscreen-persist do the "save buffer" job
+(setq desktop-files-not-to-save "")
 #+END_SRC
 
 ** Neotree
@@ -567,9 +572,25 @@ pairing or presenting code.
 
    #+BEGIN_SRC emacs-lisp
 (elscreen-start)
+(elscreen-persist-mode 1)
+(setq elscreen-tab-display-control nil)
+(setq elscreen-tab-display-kill-screen nil)
+
    #+END_SRC
 
 ** ido
+*** ido itself
+    #+BEGIN_SRC emacs-lisp
+(ido-mode 1)
+(ido-everywhere 1)
+    #+END_SRC
+
+*** ido ubiquitous
+    #+BEGIN_SRC emacs-lisp
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode 1)
+    #+END_SRC
+
 *** vertical mode
     Makes ido-mode display vertically.
     #+BEGIN_SRC emacs-lisp
@@ -581,8 +602,7 @@ pairing or presenting code.
 *** flx-ido
     #+BEGIN_SRC emacs-lisp
 (require 'flx-ido)
-(ido-mode 1)
-(ido-everywhere 1)
+
 (flx-ido-mode 1)
 ; disable ido faces to see flx highlights.
 (setq ido-enable-flex-matching t)
