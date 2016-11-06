@@ -6,16 +6,6 @@
 
 (org-babel-load-file "~/.emacs.d/configuration.org")
 
-
-
-(global-set-key (kbd "C--") 'ace-window)
-
-
-
-
-(setq ido-enable-flex-matching t)
-(setq ido-everywhere t)
-(ido-mode 1)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -23,8 +13,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (skype htmlize notmuch ox-html5slide ox-reveal auto-dictionary prodigy mu4e-maildirs-extension js2-mode scss-mode multi-term yaml-mode web-mode use-package twig-mode tabbar swbuff solarized-theme sass-mode rainbow-mode phpcbf php+-mode org-bullets org neotree magit ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css flycheck dockerfile-mode company-php ace-window ac-php))))
-
+    (elscreen-persist elscreen persp-projectile undo-tree find-file-in-project htmlize php-auto-yasnippets notmuch ox-html5slide ox-reveal auto-dictionary prodigy mu4e-maildirs-extension js2-mode scss-mode multi-term yaml-mode web-mode use-package twig-mode tabbar swbuff solarized-theme sass-mode rainbow-mode phpcbf php+-mode org-bullets org neotree magit ggtags geben-helm-projectile flymake-yaml flymake-sass flymake-phpcs flymake-php flymake-css flycheck dockerfile-mode company-php ace-window ac-php))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

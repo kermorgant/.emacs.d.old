@@ -1,3 +1,4 @@
+
 * Use sensible-defaults.el
 
 Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
@@ -62,14 +63,19 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (add-hook 'org-mode-hook 'turn-on-auto-fill)
 #+END_SRC
 
-** auto-dictionary for spell checking
+** Spell checking
    An automatic dictionary switcher for Emacs spell checking
    https://github.com/nschum/auto-dictionary-mode
 #+BEGIN_SRC emacs-lisp
 (require 'auto-dictionary)
-(add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode 1)))
+(add-hook 'flyspell-mode-hook (lambda () (auto-dictionary-mode t)))
 #+END_SRC
 
+** better undo
+   #+BEGIN_SRC emacs-lisp
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+   #+END_SRC
 ** Custom key-bindings
    Just some handy functions.
 
@@ -83,6 +89,9 @@ http://ergoemacs.org/emacs/emacs_package_system.html
   (global-set-key (kbd "C-x g") 'magit-status)
   (global-set-key (kbd "C-<nSPC>") 'expand-abbrev)
 
+(defalias 'redo 'undo-tree-redo)
+;(global-set-key (kbd "C-z") 'undo) ; 【Ctrl+z】
+;(global-set-key (kbd "C-y") 'redo) ; 【Ctrl+y】; Microsoft Windows style
 #+END_SRC
 * Mail with emacs
 ** incoming mails
@@ -386,6 +395,11 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 	      (add-to-list 'write-file-functions 'delete-trailing-whitespace))
 	   )
  #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require 'php-auto-yasnippets)
+(define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
+#+END_SRC
 **** Debugging
 
  https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
@@ -463,6 +477,15 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
   (projectile-global-mode)
 #+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp
+
+;(persp-mode)
+
+;(require 'persp-projectile)
+;(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+#+END_SRC
+
 * Sysadmin
 ** Docker
 #+BEGIN_SRC emacs-lisp
@@ -494,11 +517,16 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 Saving Emacs Sessions
 #+BEGIN_SRC emacs-lisp
 (desktop-save-mode 1)
+
+; this one lets elscreen-persist do the "save buffer" job
+(setq desktop-files-not-to-save "")
 #+END_SRC
 
 ** Neotree
 
 #+BEGIN_SRC emacs-lisp
+(require 'neotree)
+
 (defun neotree-project-dir ()
   "Open NeoTree using the git root."
   (interactive)
@@ -512,11 +540,12 @@ Saving Emacs Sessions
       (message "Could not find git project root."))))
 
 (global-set-key [f8] 'neotree-project-dir)
-(require 'neotree)
 
-(global-set-key [f8] 'neotree-toggle)
+;(global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 (setq neo-window-width 40)
+
+   (setq projectile-switch-project-action 'neotree-projectile-action)
  #+END_SRC
 
 ** Custom solarized-dark theme
@@ -555,55 +584,97 @@ pairing or presenting code.
    #+END_SRC
 ** buffer cycling
 #+BEGIN_SRC emacs-lisp
-(require 'swbuff)
+ (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
 #+END_SRC
+** frames
+   ElScreen is an Emacs utility with which you can have multiple screens
+   (window-configuration) on your GNU Emacs as well as GNU screen on terminal.
+   https://github.com/knu/elscreen
+
+   #+BEGIN_SRC emacs-lisp
+(elscreen-start)
+(elscreen-persist-mode 1)
+(setq elscreen-tab-display-control nil)
+(setq elscreen-tab-display-kill-screen nil)
+
+   #+END_SRC
+
+** ido
+*** ido itself
+    #+BEGIN_SRC emacs-lisp
+(ido-mode 1)
+(ido-everywhere 1)
+    #+END_SRC
+
+*** ido ubiquitous
+    #+BEGIN_SRC emacs-lisp
+(require 'ido-ubiquitous)
+(ido-ubiquitous-mode 1)
+    #+END_SRC
+
+*** vertical mode
+    Makes ido-mode display vertically.
+    #+BEGIN_SRC emacs-lisp
+(require 'ido-vertical-mode)
+(ido-mode 1)
+(ido-vertical-mode 1)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+    #+END_SRC
+*** flx-ido
+    #+BEGIN_SRC emacs-lisp
+(require 'flx-ido)
+
+(flx-ido-mode 1)
+; disable ido faces to see flx highlights.
+(setq ido-enable-flex-matching t)
+(setq ido-use-faces nil)
+    #+END_SRC
 * Org-mode
 ** Shortcuts
-
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (define-key global-map "\C-cc" 'org-capture)
-#+END_SRC
+   #+END_SRC
 ** filetype association
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (add-to-list 'auto-mode-alist '("\\.txt$" . org-mode))
-#+END_SRC
+   #+END_SRC
 ** Conflicts
 *** shift-select
-shift-select works where org-mode does not have special functionality
+    shift-select works where org-mode does not have special functionality
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (setq org-support-shift-select t)
-#+END_SRC
+    #+END_SRC
 ** Display prefs
 
-outline of pretty bullets instead of a list of asterisks.
+   outline of pretty bullets instead of a list of asterisks.
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
           (lambda ()
             (org-bullets-mode t)))
-#+END_SRC
+   #+END_SRC
 
-Use syntax highlighting in source blocks while editing.
+   Use syntax highlighting in source blocks while editing.
 
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
-#+END_SRC
+   #+END_SRC
 
-I like seeing a little downward-pointing arrow instead of the usual ellipsis (...) that org displays when there’s stuff under a header.
+   I like seeing a little downward-pointing arrow instead of the usual ellipsis (...) that org displays when there’s stuff under a header.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-ellipsis "⤵")
 #+END_SRC
 ** Task and org-capture management
 *** Capturing tasks
-Define a few common tasks as capture templates.
+    Define a few common tasks as capture templates.
 
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       '(("b" "Blog idea"
          entry
@@ -623,7 +694,7 @@ Define a few common tasks as capture templates.
          entry
          (file org-index-file)
          "* TODO %?\n")))
-#+END_SRC
+    #+END_SRC
 
 ** Latex export
    useful source comments here :
@@ -854,9 +925,9 @@ showstringspaces=false}
     #+END_SRC
 
 ** presentation
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (setq org-reveal-root "file:///~/.emacs.d/reveal.js")
-#+END_SRC
+   #+END_SRC
 * Dired
 Load up the assorted dired extensions.
 
