@@ -572,7 +572,8 @@ pairing or presenting code.
 
    #+BEGIN_SRC emacs-lisp
 (elscreen-start)
-(elscreen-persist-mode 1)
+; persist-mode buggy for now
+(elscreen-persist-mode nil)
 (setq elscreen-tab-display-control nil)
 (setq elscreen-tab-display-kill-screen nil)
 
