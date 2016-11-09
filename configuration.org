@@ -514,17 +514,17 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
   (scroll-bar-mode -1))
 #+END_SRC
 ** Session
-Saving Emacs Sessions
-#+BEGIN_SRC emacs-lisp
+   Saving Emacs Sessions
+   #+BEGIN_SRC emacs-lisp
 (desktop-save-mode 1)
 
 ; this one lets elscreen-persist do the "save buffer" job
 (setq desktop-files-not-to-save "")
-#+END_SRC
+   #+END_SRC
 
 ** Neotree
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (require 'neotree)
 
 (defun neotree-project-dir ()
@@ -539,14 +539,14 @@ Saving Emacs Sessions
 	      (neotree-find file-name)))
       (message "Could not find git project root."))))
 
-(global-set-key [f8] 'neotree-project-dir)
+;(global-set-key [f8] 'neotree-project-dir)
 
-;(global-set-key [f8] 'neotree-toggle)
+(global-set-key [f8] 'neotree-toggle)
 (setq neo-smart-open t)
 (setq neo-window-width 40)
 
    (setq projectile-switch-project-action 'neotree-projectile-action)
- #+END_SRC
+   #+END_SRC
 
 ** Custom solarized-dark theme
 
@@ -593,7 +593,8 @@ pairing or presenting code.
 
    #+BEGIN_SRC emacs-lisp
 (elscreen-start)
-(elscreen-persist-mode 1)
+; persist-mode buggy for now
+(elscreen-persist-mode nil)
 (setq elscreen-tab-display-control nil)
 (setq elscreen-tab-display-kill-screen nil)
 
@@ -618,7 +619,8 @@ pairing or presenting code.
 (require 'ido-vertical-mode)
 (ido-mode 1)
 (ido-vertical-mode 1)
-(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+;(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+(setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
     #+END_SRC
 *** flx-ido
     #+BEGIN_SRC emacs-lisp
@@ -653,16 +655,16 @@ pairing or presenting code.
    outline of pretty bullets instead of a list of asterisks.
 
    #+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook
+(add-hook 'org-mode-hook
           (lambda ()
             (org-bullets-mode t)))
    #+END_SRC
 
    Use syntax highlighting in source blocks while editing.
 
-
    #+BEGIN_SRC emacs-lisp
 (setq org-src-fontify-natively t)
+(setq org-src-tab-acts-natively t)
    #+END_SRC
 
    I like seeing a little downward-pointing arrow instead of the usual ellipsis (...) that org displays when there’s stuff under a header.
