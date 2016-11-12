@@ -309,70 +309,71 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
 #+END_SRC
 
-** Webdev
-*** PHP coding stuff
+** PHP coding stuff
 **** php-mode + hooks
  #+BEGIN_SRC emacs-lisp
- (require 'php-mode)
+       (require 'php-mode)
 
- (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
- (eval-after-load 'php-mode '(require 'php-ext))
- ;(eval-after-load 'php-mode '(require 'company-php))
+       (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
 
-(defun my-php-mode-hook ()
-;;  (auto-complete-mode t)
-;;  (setq ac-sources  '(ac-source-php ) )
-;;  (require 'ac-php)
-  (setq indent-tabs-mode nil)
-  (setq c-basic-offset 2)
-  (setq php-template-compatibility nil)
-  (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
-  (subword-mode 1)
-  (company-mode t)
-  (ac-config-default)
+      (defun my-php-mode-hook ()
+        ;; auto-comple with ac-php & company
+        (require 'company-php)
+        (company-mode t)
+        (set (make-local-variable 'company-backends)
+                      '((php-extras-company company-dabbrev) company-capf company-files))
+        (add-to-list 'company-backends 'company-ac-php-backend )
 
-  (setq ac-auto-start 3)
-  (setq ac-expand-on-auto-complete t)
-;  (ac-set-trigger-key "TAB")
- ; (setq ac-use-quick-help nil)
+        (setq indent-tabs-mode nil)
+        (setq c-basic-offset 4)
+        (setq php-template-compatibility nil)
+        (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
+        (subword-mode 1)
+      ;  (company-mode t)
+      ;  (ac-config-default)
 
-;  (setq ac-expand-on-auto-complete t)
-  (php-enable-symfony2-coding-style)
- ; (add-to-list 'company-backends 'company-ac-php-backend)
-  ;(define-key php-mode-map  (kbd "C-SPC") 'company-complete )
-)
+      ;  (setq ac-auto-start 3)
+      ;  (setq ac-expand-on-auto-complete t)
+      ;  (ac-set-trigger-key "TAB")
+       ; (setq ac-use-quick-help nil)
 
-(add-hook 'php-mode-hook 'my-php-mode-hook)
+      ;  (setq ac-expand-on-auto-complete t)
+        (php-enable-symfony2-coding-style)
+       ; (add-to-list 'company-backends 'company-ac-php-backend)
+        ;(define-key php-mode-map  (kbd "C-SPC") 'company-complete )
+      )
 
-;  (add-hook 'php-mode-hook
-;            '(lambda ()
-;               (auto-complete-mode t)
-;               (require 'ac-php)
-;               (setq ac-sources  '(ac-source-php ) )
-;               (yas-global-mode 1)
-;               (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
-;               (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-;               ))
+      (add-hook 'php-mode-hook 'my-php-mode-hook)
 
- (add-hook 'php-mode-hook
-           '(lambda ()
-	      (require 'company-php)
-	      (company-mode t)
-              (add-to-list 'company-backends 'company-ac-php-backend
-              (define-key php-mode-map  (kbd "C-SPC") 'company-complete )
-	      ))
-  )
+      ;  (add-hook 'php-mode-hook
+      ;            '(lambda ()
+      ;               (auto-complete-mode t)
+      ;               (require 'ac-php)
+      ;               (setq ac-sources  '(ac-source-php ) )
+      ;               (yas-global-mode 1)
+      ;               (define-key php-mode-map  (kbd "C-=") 'ac-php-find-symbol-at-point)   ;goto define
+      ;               (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+      ;               ))
 
- (add-hook 'php-mode-hook
-           '(lambda ()
-	      (when (derived-mode-p 'php-mode)
-		(ggtags-mode 1))
-	      )
-	   )
- (add-hook 'php-mode-hook
-	   '(lambda ()
-	      (add-to-list 'write-file-functions 'delete-trailing-whitespace))
-	   )
+     ;  (add-hook 'php-mode-hook
+     ;            '(lambda ()
+     ;               (require 'company-php)
+     ;               (company-mode t)
+     ;               (add-to-list 'company-backends 'company-ac-php-backend
+     ;               (define-key php-mode-map  (kbd "C-SPC") 'company-complete )
+     ;               ))
+     ;   )
+
+       (add-hook 'php-mode-hook
+                 '(lambda ()
+                    (when (derived-mode-p 'php-mode)
+                      (ggtags-mode 1))
+                    )
+                 )
+       (add-hook 'php-mode-hook
+                 '(lambda ()
+                    (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+                 )
  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -381,19 +382,19 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 #+END_SRC
 **** Debugging
 
- https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
+  https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
 
- #+BEGIN_SRC emacs_lisp
- (autoload 'geben "geben" "PHP Debugger on Emacs" t)
- ; firebug shorcuts
- (eval-after-load 'geben
-   '(progn
-     (define-key geben-mode-map (kbd "<f8>") 'geben-run)
-     (define-key geben-mode-map (kbd "<f10>") 'geben-step-over)
-     (define-key geben-mode-map (kbd "<f11>") 'geben-step-into)
-     (define-key geben-mode-map (kbd "S-<f11>") 'geben-step-out)))
- #+END_SRC
-
+  #+BEGIN_SRC emacs_lisp
+  (autoload 'geben "geben" "PHP Debugger on Emacs" t)
+  ; firebug shorcuts
+  (eval-after-load 'geben
+    '(progn
+      (define-key geben-mode-map (kbd "<f8>") 'geben-run)
+      (define-key geben-mode-map (kbd "<f10>") 'geben-step-over)
+      (define-key geben-mode-map (kbd "<f11>") 'geben-step-into)
+      (define-key geben-mode-map (kbd "S-<f11>") 'geben-step-out)))
+  #+END_SRC
+** Webdev
 *** Web-mode
 #+BEGIN_SRC emacs-lisp
  (require 'web-mode)
@@ -498,7 +499,7 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 (desktop-save-mode 1)
 
 ; this one lets elscreen-persist do the "save buffer" job
-(setq desktop-files-not-to-save "")
+; (setq desktop-files-not-to-save "")
    #+END_SRC
 
 ** Neotree
@@ -573,7 +574,7 @@ pairing or presenting code.
    #+BEGIN_SRC emacs-lisp
 (elscreen-start)
 ; persist-mode buggy for now
-(elscreen-persist-mode nil)
+;(elscreen-persist-mode nil)
 (setq elscreen-tab-display-control nil)
 (setq elscreen-tab-display-kill-screen nil)
 
