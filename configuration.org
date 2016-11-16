@@ -635,6 +635,12 @@ pairing or presenting code.
 (setq ido-enable-flex-matching t)
 (setq ido-use-faces nil)
     #+END_SRC
+** magit fullscreen
+
+#+BEGIN_SRC emacs-lisp
+  (setq magit-display-buffer-function
+        #'magit-display-buffer-fullframe-status-v1)
+#+END_SRC
 * Org-mode
 ** Shortcuts
    #+BEGIN_SRC emacs-lisp
