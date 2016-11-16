@@ -386,7 +386,7 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
     '(phpcbf-standard "PSR2"))
 
    ;; Auto format on save.
-;   (add-hook 'php-mode-hook 'phpcbf-enable-on-save)
+   ;(add-hook 'php-mode-hook 'phpcbf-enable-on-save)
  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
