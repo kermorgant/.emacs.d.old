@@ -386,7 +386,7 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
     '(phpcbf-standard "PSR2"))
 
    ;; Auto format on save.
-   (add-hook 'php-mode-hook 'phpcbf-enable-on-save)
+;   (add-hook 'php-mode-hook 'phpcbf-enable-on-save)
  #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -450,11 +450,11 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
 #+END_SRC
 ** Projectile
 
-Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky enough
-that I rarely use it (and forget it when I need it). This binds the
-easier-to-type =C-c C-v= and =C-c v= to useful searches.
+   Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
+   enough that I rarely use it (and forget it when I need it). This binds the
+   easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
   (defun hrs/search-project-for-symbol-at-point ()
     "Use `projectile-ag' to search the current project for `symbol-at-point'."
     (interactive)
@@ -465,10 +465,21 @@ easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
   (setq projectile-switch-project-action 'neotree-projectile-action)
 
-  ;;(setq projectile-keymap-prefix (kbd "C-c C-p"))
+  (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
 
   (projectile-global-mode)
-#+END_SRC
+
+  (setq projectile-enable-caching t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+ (load-file "~/.emacs.d/persp-projectile.el")
+
+(persp-mode)
+(require 'persp-projectile)
+
+(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+   #+END_SRC
 
 
 #+BEGIN_SRC emacs-lisp
