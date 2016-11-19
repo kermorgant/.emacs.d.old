@@ -99,7 +99,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    https://martinralbrecht.wordpress.com/2016/05/30/handling-email-with-emacs/
 
    imapnotify speaks imap idle with server.
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 (server-start)
 (use-package prodigy
   :ensure t
@@ -112,7 +112,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
     :args (list "-c" (expand-file-name "~/.emacs.d/imapnotify.gmail.js" (getenv "HOME")))
     :tags '(email)
     :kill-signal 'sigkill))
-#+END_SRC
+   #+END_SRC
 ** M4ue config
 *** global settings
     #+BEGIN_SRC emacs-lisp
@@ -120,16 +120,10 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
 (global-set-key (kbd "C-c m") 'mu4e)
 (setq mu4e-maildir (expand-file-name "~/mbsync"))
+(setq mu4e-attachment-dir  "~/Downloads/Attachments")
+(setq mu4e-headers-skip-duplicates t)
 
-;;command used to get mail
-;; use this for testing
-;;(setq mu4e-get-mail-command "true")
-;; use this to sync with mbsync
-;(setq mu4e-get-mail-command "mbsync gmail")
-
-
-;;rename files when moving
-;;NEEDED FOR MBSYNC
+;;rename files when moving - NEEDED FOR MBSYNC
 (setq mu4e-change-filenames-when-moving t)
 
 ;;set up queue for offline email
@@ -137,21 +131,89 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 (setq smtpmail-queue-mail nil  ;; start in normal mode
       smtpmail-queue-dir   "~/mbsync/gmail/queue/cur")
 
-(setq mu4e-attachment-dir  "~/Downloads/Attachments")
-
 (setq message-kill-buffer-on-exit t)
 
 ;; spell check
-; (add-hook 'mu4e-compose-mode-hook
-;         (defun my-do-compose-stuff ()
-;            "My settings for message composition."
-;            (set-fill-column 72)
-;            (flyspell-mode)))
+(add-hook 'mu4e-compose-mode-hook
+         (defun my-do-compose-stuff ()
+            "My settings for message composition."
+            (set-fill-column 72)
+            (flyspell-mode)))
     #+END_SRC
-*** accounts config
+
+*** editor config
     #+BEGIN_SRC emacs-lisp
-  (setq mu4e-contexts
-    `( ,(make-mu4e-context
+
+; html mails with w3m
+(setq mu4e-html2text-command "w3m -T text/html -o auto_image=TRUE ")
+
+; view images inline
+(setq mu4e-view-show-images t)
+(when (fboundp 'imagemagick-register-types)
+  (imagemagick-register-types))
+
+(add-to-list 'mu4e-view-actions
+  '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+(defun my-mu4e-action-view-with-xwidget (msg)
+  "View the body of the message inside xwidget-webkit."
+  (unless (fboundp 'xwidget-webkit-browse-url)
+    (mu4e-error "No xwidget support available"))
+  (let* ((html (mu4e-message-field msg :body-html))
+          (txt (mu4e-message-field msg :body-txt))
+          (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
+    (unless (or html txt)
+      (mu4e-error "No body part for this message"))
+    (with-temp-buffer
+      ;; simplistic -- but note that it's only an example...
+      (insert (or html (concat "<pre>" txt "</pre>")))
+      (write-file tmpfile)
+      (xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
+
+(add-to-list 'mu4e-view-actions
+  '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
+    #+END_SRC
+
+*** kgtech config
+    #+BEGIN_SRC emacs-lisp
+    (setq  kgtech-mu4e-context
+        (make-mu4e-context
+	  :name "Kgtech"
+	  :enter-func (lambda () (mu4e-message "Switch to the Kgtech context"))
+	  ;; leave-fun not defined
+	  :match-func (lambda (msg)
+			(when msg
+			  (mu4e-message-contact-field-matches msg
+			    :to "@kgtech.fi")))
+	  :vars '( (user-mail-address	     . "mikael@kgtech.fi." )
+		   (user-full-name	    . "Mikael Kermorgant" )
+		   (mu4e-compose-signature . (concat "Mikael Kermorgant"))
+                   (mu4e-drafts-folder .     "/kgtech/Drafts")
+                   (mu4e-sent-folder   .     "/kgtech/Sent")
+                   (mu4e-trash-folder  .     "/kgtech/Trash")
+                   (mu4e-get-mail-command  . "mbsync kgtech")
+                   (mu4e-maildir-shortcuts .
+                     (("/kgtech/Inbox"               . ?i)
+                      ("/kgtech/Sent"                . ?s)
+                      ("/kgtech/Clients"             . ?c)
+                      ("/kgtech/Trash"               . ?t)
+                      ("/kgtech/Drafts"              . ?d))
+                   )
+    )))
+
+   (setq mu4e-compose-signature
+    (concat
+      "Mikael Kermorgant\n"
+      "https://www.kgtech.fi\n"
+      "╦╔═╔═╗╔╦╗┌─┐┌─┐┬ ┬\n"
+      "╠╩╗║ ╦ ║ ├┤ │  ├─┤\n"
+      "╩ ╩╚═╝ ╩ └─┘└─┘┴ ┴\n"))
+    #+END_SRC
+
+*** gmail config
+    #+BEGIN_SRC emacs-lisp
+    (setq  gmail-mu4e-context
+        (make-mu4e-context
 	  :name "gmail"
 	  :enter-func (lambda () (mu4e-message "Switch to the Private context"))
 	  ;; leave-func not defined
@@ -174,7 +236,16 @@ http://ergoemacs.org/emacs/emacs_package_system.html
                       ("/gmail/[Gmail].Trash"       . ?t)
                       ("/gmail/[Gmail].All Mail"    . ?a)))
                    (mu4e-sent-messages-behavior 'delete)
-))
+       )))
+  (setq mu4e-compose-context-policy nil)
+
+
+    #+END_SRC
+
+*** contexts setup
+    #+BEGIN_SRC emacs-lisp
+  (setq mu4e-contexts
+    `( ,gmail-mu4e-context
        ,(make-mu4e-context
 	  :name "Yahoo"
 	  :enter-func (lambda () (mu4e-message "Switch to the Yahoo context"))
@@ -191,9 +262,12 @@ http://ergoemacs.org/emacs/emacs_package_system.html
                    (mu4e-trash-folder  .     "/yahoo/trash")
                    (mu4e-get-mail-command  . "mbsync yahoo")
                    (mu4e-maildir-shortcuts .
-                     (("/yahoo/Inbox"               . ?i)))
+                     (("/yahoo/Inbox"               . ?i))
+                   )
 
-))))
+      ))
+      , kgtech-mu4e-context
+))
 
   ;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
   ;; guess or ask the correct context, e.g.
@@ -204,27 +278,8 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
   ;; compose with the current context is no context matches;
   ;; default is to ask
-  (setq mu4e-compose-context-policy nil)
     #+END_SRC
 
-    #+BEGIN_SRC emacs-lisp
-(setq mu4e-headers-skip-duplicates t)
-
-
-
-;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
-;(setq mu4e-sent-messages-behavior 'delete)
-    #+END_SRC
-*** kgtech config
-    #+BEGIN_SRC noemacs-lisp
-   (setq mu4e-compose-signature
-    (concat
-      "Mikael Kermorgant\n"
-      "https://www.kgtech.fi\n"
-      "╦╔═╔═╗╔╦╗┌─┐┌─┐┬ ┬\n"
-      "╠╩╗║ ╦ ║ ├┤ │  ├─┤\n"
-      "╩ ╩╚═╝ ╩ └─┘└─┘┴ ┴\n"))
-    #+END_SRC
 ** msmtp
 
 #+BEGIN_SRC emacs-lisp
@@ -234,40 +289,6 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
 (setq message-sendmail-extra-arguments '("--read-envelope-from"))
 (setq message-sendmail-f-is-evil 't)
-#+END_SRC
-
-** editor config
-#+BEGIN_SRC emacs-lisp
-
-; html mails with w3m
-(setq mu4e-html2text-command "w3m -T text/html -o auto_image=TRUE ")
-
-; view images inline
-(setq mu4e-view-show-images t)
-(when (fboundp 'imagemagick-register-types)
-  (imagemagick-register-types))
-
-; vertical split view
-;(setq mu4e-split-view 'vertical)
-;(setq mu4e-headers-visible-columns 60)
-
-(defun my-mu4e-action-view-with-xwidget (msg)
-  "View the body of the message inside xwidget-webkit."
-  (unless (fboundp 'xwidget-webkit-browse-url)
-    (mu4e-error "No xwidget support available"))
-  (let* ((html (mu4e-message-field msg :body-html))
-          (txt (mu4e-message-field msg :body-txt))
-          (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
-    (unless (or html txt)
-      (mu4e-error "No body part for this message"))
-    (with-temp-buffer
-      ;; simplistic -- but note that it's only an example...
-      (insert (or html (concat "<pre>" txt "</pre>")))
-      (write-file tmpfile)
-      (xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
-
-(add-to-list 'mu4e-view-actions
-  '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
 #+END_SRC
 
 ** org-mode integration
@@ -450,18 +471,29 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
    #+BEGIN_SRC emacs-lisp
      (defun hrs/search-project-for-symbol-at-point ()
-       "Use `projectile-ag' to search the current project for `symbol-at-point'."
-       (interactive)
-       (projectile-ag (projectile-symbol-at-point)))
+          "Use `projectile-ag' to search the current project for `symbol-at-point'."
+          (interactive)
+          (projectile-ag (projectile-symbol-at-point)))
 
      (global-set-key (kbd "C-c v") 'projectile-ag)
      (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
 
      (setq projectile-switch-project-action 'neotree-projectile-action)
 
-     ;;(setq projectile-keymap-prefix (kbd "C-c C-p"))
+     (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
 
      (projectile-global-mode)
+
+     (setq projectile-enable-caching t)
+   #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+      (load-file "~/.emacs.d/persp-projectile.el")
+
+     (persp-mode)
+     (require 'persp-projectile)
+
+     (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
    #+END_SRC
 
 
@@ -601,6 +633,12 @@ http://ergoemacs.org/emacs/emacs_package_system.html
       (setq ido-enable-flex-matching t)
       (setq ido-use-faces nil)
     #+END_SRC
+** magit fullscreen
+
+#+BEGIN_SRC emacs-lisp
+  (setq magit-display-buffer-function
+        #'magit-display-buffer-fullframe-status-v1)
+#+END_SRC
 * Org-mode
 ** Shortcuts
    #+BEGIN_SRC emacs-lisp
