@@ -409,30 +409,30 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
   #+END_SRC
 ** Webdev
 *** Web-mode
-#+BEGIN_SRC emacs-lisp
- (require 'web-mode)
+    #+BEGIN_SRC emacs-lisp
+      (require 'web-mode)
 
- (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
- (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
- (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
- (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+      (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
+      (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+      (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
+      (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 
- (setq web-mode-enable-css-colorization t)
- (setq web-mode-enable-current-element-highlight t)
- (setq web-mode-ac-sources-alist
-   '(("css" . (ac-source-css-property))
-     ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
- (setq web-mode-code-indent-offset 2)
- (setq web-mode-css-indent-offset 2)
- (setq web-mode-markup-indent-offset 2)
- ;; padding
- ;; For <style> parts
- (setq web-mode-style-padding 1)
- ;; For <script> parts
- (setq web-mode-script-padding 1)
- ;; For multi-line blocks
- (setq web-mode-block-padding 0)
-#+END_SRC
+      (setq web-mode-enable-css-colorization t)
+      (setq web-mode-enable-current-element-highlight t)
+      (setq web-mode-ac-sources-alist
+        '(("css" . (ac-source-css-property))
+          ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+      (setq web-mode-code-indent-offset 2)
+      (setq web-mode-css-indent-offset 2)
+      (setq web-mode-markup-indent-offset 2)
+      ;; padding
+      ;; For <style> parts
+      (setq web-mode-style-padding 1)
+      ;; For <script> parts
+      (setq web-mode-script-padding 1)
+      ;; For multi-line blocks
+      (setq web-mode-block-padding 0)
+    #+END_SRC
 *** CSS & SCSS
  #+BEGIN_SRC emacs-lisp
  (add-hook 'css-mode-hook
@@ -455,40 +455,39 @@ Read this : http://www.flycheck.org/en/latest/user/quickstart.html
    easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
    #+BEGIN_SRC emacs-lisp
-  (defun hrs/search-project-for-symbol-at-point ()
-    "Use `projectile-ag' to search the current project for `symbol-at-point'."
-    (interactive)
-    (projectile-ag (projectile-symbol-at-point)))
+       (defun hrs/search-project-for-symbol-at-point ()
+         "Use `projectile-ag' to search the current project for `symbol-at-point'."
+         (interactive)
+         (projectile-ag (projectile-symbol-at-point)))
 
-  (global-set-key (kbd "C-c v") 'projectile-ag)
-  (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
+       (global-set-key (kbd "C-c v") 'projectile-ag)
+       (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
 
-  (setq projectile-switch-project-action 'neotree-projectile-action)
+       (setq projectile-switch-project-action 'neotree-projectile-action)
 
-  (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
+       (projectile-global-mode)
 
-  (projectile-global-mode)
-
-  (setq projectile-enable-caching t)
+     ;  (setq projectile-enable-caching t)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
- (load-file "~/.emacs.d/persp-projectile.el")
+      (load-file "~/.emacs.d/persp-projectile.el")
 
-(persp-mode)
-(require 'persp-projectile)
+     (persp-mode)
+     (require 'persp-projectile)
 
-(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+       (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
+     (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
    #+END_SRC
 
 
-#+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC emacs-lisp
 
-;(persp-mode)
+     (persp-mode)
 
-;(require 'persp-projectile)
-;(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-#+END_SRC
+     (require 'persp-projectile)
+     (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+   #+END_SRC
 
 * Sysadmin
 ** Docker
