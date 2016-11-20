@@ -355,9 +355,8 @@ http://ergoemacs.org/emacs/emacs_package_system.html
          ;; auto-comple with ac-php & company
          (require 'company-php)
          (company-mode t)
-         (set (make-local-variable 'company-backends)
-                       '((php-extras-company company-dabbrev) company-capf company-files))
-         (add-to-list 'company-backends 'company-ac-php-backend )
+;         (set (make-local-variable 'company-backends)
+;                       '((php-extras-company company-dabbrev) company-capf company-files))
 
          (setq indent-tabs-mode nil)
          (setq c-basic-offset 4)
@@ -463,45 +462,6 @@ http://ergoemacs.org/emacs/emacs_package_system.html
     #+BEGIN_SRC emacs-lisp
       (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
     #+END_SRC
-** Projectile
-
-   Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
-   enough that I rarely use it (and forget it when I need it). This binds the
-   easier-to-type =C-c C-v= and =C-c v= to useful searches.
-
-   #+BEGIN_SRC emacs-lisp
-
-       (defun hrs/search-project-for-symbol-at-point ()
-         "Use `projectile-ag' to search the current project for `symbol-at-point'."
-         (interactive)
-         (projectile-ag (projectile-symbol-at-point)))
-
-       (global-set-key (kbd "C-c v") 'projectile-ag)
-       (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
-
-       (setq projectile-switch-project-action 'neotree-projectile-action)
-
-       (projectile-global-mode)
-
-     ;(setq projectile-enable-caching t)
-   #+END_SRC
-
-   #+BEGIN_SRC emacs-lisp
-      (load-file "~/.emacs.d/persp-projectile.el")
-
-     (persp-mode)
-     (require 'persp-projectile)
-     (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
-
-     ;(persp-mode)
-
-     ;(require 'persp-projectile)
-     ;(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-   #+END_SRC
 
 * Sysadmin
 ** Docker
@@ -959,4 +919,34 @@ showstringspaces=false}
   Ask before recursively deleting a directory, though.
   #+BEGIN_SRC emacs-lisp
     (setq dired-recursive-deletes 'top)
+  #+END_SRC
+* Projectile
+
+  Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
+  enough that I rarely use it (and forget it when I need it). This binds the
+  easier-to-type =C-c C-v= and =C-c v= to useful searches.
+  #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/persp-projectile.el")
+
+    (persp-mode)
+    (require 'persp-projectile)
+
+    (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+  #+END_SRC
+
+  #+BEGIN_SRC emacs-lisp
+      (projectile-global-mode)
+
+      (defun hrs/search-project-for-symbol-at-point ()
+        "Use `projectile-ag' to search the current project for `symbol-at-point'."
+        (interactive)
+        (projectile-ag (projectile-symbol-at-point)))
+
+      (global-set-key (kbd "C-c v") 'projectile-ag)
+      (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
+
+      (setq projectile-switch-project-action 'neotree-projectile-action)
+
+
+    ;(setq projectile-enable-caching t)
   #+END_SRC
