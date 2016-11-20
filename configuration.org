@@ -1,4 +1,3 @@
-
 * Use sensible-defaults.el
 
 Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
@@ -34,21 +33,6 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
   (add-to-list 'load-path "#/.emacs.d/lisp")
-#+END_SRC
-
-* Utilities functions
-#+BEGIN_SRC emacs-lisp
-(defun hrs/split-window-below-and-switch ()
-  "Split the window horizontally, then switch to the new pane."
-  (interactive)
-  (split-window-below)
-  (other-window 1))
-
-(defun hrs/split-window-right-and-switch ()
-  "Split the window vertically, then switch to the new pane."
-  (interactive)
-  (split-window-right)
-  (other-window 1))
 #+END_SRC
 
 * Editing Settings
@@ -560,6 +544,8 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
    #+END_SRC
+** workspaces / frames
+
 ** ido
 *** ido itself
     #+BEGIN_SRC emacs-lisp
