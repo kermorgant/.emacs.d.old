@@ -1,4 +1,3 @@
-
 * Use sensible-defaults.el
 
 Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
@@ -34,21 +33,6 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
   (add-to-list 'load-path "#/.emacs.d/lisp")
-#+END_SRC
-
-* Utilities functions
-#+BEGIN_SRC emacs-lisp
-(defun hrs/split-window-below-and-switch ()
-  "Split the window horizontally, then switch to the new pane."
-  (interactive)
-  (split-window-below)
-  (other-window 1))
-
-(defun hrs/split-window-right-and-switch ()
-  "Split the window vertically, then switch to the new pane."
-  (interactive)
-  (split-window-right)
-  (other-window 1))
 #+END_SRC
 
 * Editing Settings
@@ -470,6 +454,8 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
    #+BEGIN_SRC emacs-lisp
+     (projectile-mode)
+
      (defun hrs/search-project-for-symbol-at-point ()
           "Use `projectile-ag' to search the current project for `symbol-at-point'."
           (interactive)
@@ -482,27 +468,16 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
      (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
 
-     (projectile-global-mode)
-
      (setq projectile-enable-caching t)
    #+END_SRC
 
    #+BEGIN_SRC emacs-lisp
-      (load-file "~/.emacs.d/persp-projectile.el")
+     ;      (load-file "~/.emacs.d/persp-projectile.el")
+     ;     (require 'persp-projectile)
 
-     (persp-mode)
-     (require 'persp-projectile)
+     ;     (persp-mode)
 
-     (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-   #+END_SRC
-
-
-   #+BEGIN_SRC emacs-lisp
-
-     ;(persp-mode)
-
-     ;(require 'persp-projectile)
-     ;(define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
+      ;    (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
    #+END_SRC
 
 * Sysadmin
@@ -602,6 +577,8 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
    #+END_SRC
+** workspaces / frames
+
 ** ido
 *** ido itself
     #+BEGIN_SRC emacs-lisp
