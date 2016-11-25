@@ -441,11 +441,11 @@ http://ergoemacs.org/emacs/emacs_package_system.html
       (add-to-list 'auto-mode-alist '("\\.scss\\'" . scss-mode))
     #+END_SRC
 
-*** Javascript
+** Javascript
 
-    #+BEGIN_SRC emacs-lisp
-      (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
-    #+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+   #+END_SRC
 
 * Sysadmin
 ** Docker
@@ -476,10 +476,7 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 ** Session
    Saving Emacs Sessions
    #+BEGIN_SRC emacs-lisp
-(desktop-save-mode 1)
-
-; this one lets elscreen-persist do the "save buffer" job
-; (setq desktop-files-not-to-save "")
+     (desktop-save-mode 1)
    #+END_SRC
 
 ** Neotree
@@ -544,8 +541,6 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    #+BEGIN_SRC emacs-lisp
      (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
    #+END_SRC
-** workspaces / frames
-
 ** ido
 *** ido itself
     #+BEGIN_SRC emacs-lisp
@@ -911,14 +906,7 @@ showstringspaces=false}
   Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
   enough that I rarely use it (and forget it when I need it). This binds the
   easier-to-type =C-c C-v= and =C-c v= to useful searches.
-  #+BEGIN_SRC emacs-lisp
-     (load-file "~/.emacs.d/persp-projectile.el")
 
-    (persp-mode)
-    (require 'persp-projectile)
-
-    (define-key projectile-mode-map (kbd "s-s") 'projectile-persp-switch-project)
-  #+END_SRC
 
   #+BEGIN_SRC emacs-lisp
       (projectile-global-mode)
