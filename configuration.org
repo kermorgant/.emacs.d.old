@@ -18,8 +18,8 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
         calendar-location-name "Raseborg, Finland")
 #+END_SRC
 
-* Packages repositories
-
+* Packages
+** repositories
 http://ergoemacs.org/emacs/emacs_package_system.html
 
 #+BEGIN_SRC emacs-lisp
@@ -28,13 +28,19 @@ http://ergoemacs.org/emacs/emacs_package_system.html
    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")  t)
 
 
-(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+   (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
    (package-initialize))
 
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-  (add-to-list 'load-path "#/.emacs.d/lisp")
+   (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+   (add-to-list 'load-path "#/.emacs.d/lisp")
 #+END_SRC
-
+** packages
+  #+BEGIN_SRC emacs-lisp
+   (unless (package-installed-p 'ac-php )
+           (package-refresh-contents)
+           (package-install 'ac-php )
+   )
+  #+END_SRC
 * Editing Settings
 ** Always indent with spaces
 #+BEGIN_SRC emacs-lisp
@@ -289,6 +295,107 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 ;(add-hook 'message-mode-hook 'orgtbl-mode 'append)
 (add-hook 'message-mode-hook 'auto-complete-mode 'append)
 #+END_SRC
+* PHP coding stuff
+   TODO = Read this : https://www.philnewton.net/guides/emacs-as-a-php-editor/
+**** php-mode + hooks
+
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
+     #+BEGIN_SRC emacs-lisp
+              (require 'php-mode)
+              (require 'cl)
+              (require 'php-auto-yasnippets)
+
+              (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
+
+              (add-hook 'php-mode-hook
+                        '(lambda ()
+                           (auto-complete-mode t)
+                           (require 'ac-php)
+                           (setq ac-sources  '(ac-source-php ) )
+                           (yas-global-mode 1)
+                           (define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
+                           (define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+                           ))
+
+
+              (define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
+
+
+                   (defun my-php-mode-hook ()
+
+          ;;           (require 'company-php)
+          ;;           (company-mode t)
+          ;;           (setq company-show-numbers t)
+          ;;           (setq company-tooltip-limit 20)
+          ;;           (setq company-dabbrev-downcase nil)
+          ;;           (setq company-dabbrev-ignore-case t)
+
+          ;;           (set (make-local-variable 'company-backends)
+          ;;             '((company-dabbrev) company-capf company-files))
+
+          ;;           (define-key php-mode-map  (kbd "C-TAB") 'company-complete )
+
+
+                     (setq indent-tabs-mode nil)
+                     (setq c-basic-offset 4)
+                     (setq php-template-compatibility nil)
+                     (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
+
+                     (subword-mode 1)
+
+                                ;  (company-mode t)
+                                ;  (ac-config-default)
+
+                                ;  (setq ac-auto-start 3)
+                                ;  (setq ac-expand-on-auto-complete t)
+                                ;  (ac-set-trigger-key "TAB")
+                                 ; (setq ac-use-quick-help nil)
+
+                                ;  (setq ac-expand-on-auto-complete t)
+                                (php-enable-symfony2-coding-style)
+
+                    )
+
+                    (add-hook 'php-mode-hook 'my-php-mode-hook)
+
+                    (add-hook 'php-mode-hook
+                                           '(lambda ()
+                                              (when (derived-mode-p 'php-mode)
+                                                (ggtags-mode 1))
+                                              )
+                                           )
+                                 (add-hook 'php-mode-hook
+                                           '(lambda ()
+                                              (add-to-list 'write-file-functions 'delete-trailing-whitespace))
+                                           )
+
+                     ;       (require 'phpcbf);
+
+                             ;; https://github.com/djoos/Symfony2-coding-standard
+                     ;       (custom-set-variables
+                     ;        '(phpcbf-executable "/usr/local/bin/phpcbf")
+                     ;        '(phpcbf-standard "Symfony2"))
+
+                            ;; Auto format on save.
+                            ;(add-hook 'php-mode-hook 'phpcbf-enable-on-save)
+     #+END_SRC
+**** Debugging
+
+  https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
+
+  #+BEGIN_SRC emacs_lisp
+  (autoload 'geben "geben" "PHP Debugger on Emacs" t)
+  ; firebug shorcuts
+  (eval-after-load 'geben
+    '(progn
+      (define-key geben-mode-map (kbd "<f8>") 'geben-run)
+      (define-key geben-mode-map (kbd "<f10>") 'geben-step-over)
+      (define-key geben-mode-map (kbd "<f11>") 'geben-step-into)
+      (define-key geben-mode-map (kbd "S-<f11>") 'geben-step-out)))
+  #+END_SRC
 
 * Coding
 ** Flycheck
@@ -328,84 +435,10 @@ http://ergoemacs.org/emacs/emacs_package_system.html
      (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
    #+END_SRC
 
-** PHP coding stuff
-**** php-mode + hooks
- #+BEGIN_SRC emacs-lisp
-        (require 'php-mode)
-
-        (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-
-       (defun my-php-mode-hook ()
-         ;; auto-comple with ac-php & company
-         (require 'company-php)
-         (company-mode t)
-         (set (make-local-variable 'company-backends)
-                       '((php-extras-company company-dabbrev) company-capf company-files))
-         (add-to-list 'company-backends 'company-ac-php-backend )
-
-         (setq indent-tabs-mode nil)
-         (setq c-basic-offset 4)
-         (setq php-template-compatibility nil)
-         (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
-         (subword-mode 1)
-
-       ;  (company-mode t)
-       ;  (ac-config-default)
-
-       ;  (setq ac-auto-start 3)
-       ;  (setq ac-expand-on-auto-complete t)
-       ;  (ac-set-trigger-key "TAB")
-        ; (setq ac-use-quick-help nil)
-
-       ;  (setq ac-expand-on-auto-complete t)
-         (php-enable-symfony2-coding-style)
-        ; (add-to-list 'company-backends 'company-ac-php-backend)
-         ;(define-key php-mode-map  (kbd "C-SPC") 'company-complete )
-       )
-
-       (add-hook 'php-mode-hook 'my-php-mode-hook)
-
-
-        (add-hook 'php-mode-hook
-                  '(lambda ()
-                     (when (derived-mode-p 'php-mode)
-                       (ggtags-mode 1))
-                     )
-                  )
-        (add-hook 'php-mode-hook
-                  '(lambda ()
-                     (add-to-list 'write-file-functions 'delete-trailing-whitespace))
-                  )
-
-   (require 'phpcbf)
-
-    ;; https://github.com/djoos/Symfony2-coding-standard
-   (custom-set-variables
-    '(phpcbf-executable "/usr/local/bin/phpcbf")
-    '(phpcbf-standard "Symfony2"))
-
-   ;; Auto format on save.
-   ;(add-hook 'php-mode-hook 'phpcbf-enable-on-save)
- #+END_SRC
-
+** company-mode
 #+BEGIN_SRC emacs-lisp
-(require 'php-auto-yasnippets)
-(define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
+(add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
-**** Debugging
-
-  https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
-
-  #+BEGIN_SRC emacs_lisp
-  (autoload 'geben "geben" "PHP Debugger on Emacs" t)
-  ; firebug shorcuts
-  (eval-after-load 'geben
-    '(progn
-      (define-key geben-mode-map (kbd "<f8>") 'geben-run)
-      (define-key geben-mode-map (kbd "<f10>") 'geben-step-over)
-      (define-key geben-mode-map (kbd "<f11>") 'geben-step-into)
-      (define-key geben-mode-map (kbd "S-<f11>") 'geben-step-out)))
-  #+END_SRC
 ** Webdev
 *** Web-mode
     #+BEGIN_SRC emacs-lisp
