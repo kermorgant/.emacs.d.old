@@ -447,6 +447,25 @@ http://ergoemacs.org/emacs/emacs_package_system.html
      (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
    #+END_SRC
 
+** projectile
+   #+BEGIN_SRC noemacs-lisp
+     (projectile-mode)
+
+     (defun hrs/search-project-for-symbol-at-point ()
+          "Use `projectile-ag' to search the current project for `symbol-at-point'."
+          (interactive)
+          (projectile-ag (projectile-symbol-at-point)))
+
+     (global-set-key (kbd "C-c v") 'projectile-ag)
+     (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
+
+     (setq projectile-switch-project-action 'neotree-projectile-action)
+
+     (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
+
+     (setq projectile-enable-caching t)
+   #+END_SRC
+
 * Sysadmin
 ** Docker
    #+BEGIN_SRC emacs-lisp
@@ -498,11 +517,12 @@ http://ergoemacs.org/emacs/emacs_package_system.html
 
      ;(global-set-key [f8] 'neotree-project-dir)
 
-     (global-set-key [f8] 'neotree-toggle)
+     (global-set-key [f9] 'neotree-toggle)
+     (global-set-key [f8] 'neotree-projectile-action)
      (setq neo-smart-open t)
      (setq neo-window-width 40)
 
-        (setq projectile-switch-project-action 'neotree-projectile-action)
+     (setq projectile-switch-project-action 'neotree-projectile-action)
    #+END_SRC
 
 ** Custom solarized-dark theme
@@ -901,6 +921,7 @@ showstringspaces=false}
   #+BEGIN_SRC emacs-lisp
     (setq dired-recursive-deletes 'top)
   #+END_SRC
+
 * Projectile
 
   Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
@@ -924,3 +945,19 @@ showstringspaces=false}
 
     ;(setq projectile-enable-caching t)
   #+END_SRC
+
+* workgroups
+#+BEGIN_SRC emacs-lisp
+
+(require 'workgroups2)
+;;   ...     <--- Change some settings here
+
+(setq wg-use-default-session-file nil)  ; autoload/autosave (turn off for "emacs --daemon")
+(setq wg-prefix-key (kbd "C-z"))                  ; Prefix key
+(setq wg-default-session-file "~/.emacs.d/wg_session")   ; Session file
+(global-set-key (kbd "s-z")         'wg-switch-to-workgroup)
+(global-set-key (kbd "s-a")         'wg-switch-to-previous-workgroup)
+
+(workgroups-mode 1)        ; put this one at the bottom of .emacs
+
+#+END_SRC
