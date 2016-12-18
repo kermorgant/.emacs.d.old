@@ -1,0 +1,195 @@
+* Mail with emacs
+** incoming mails
+   config found here :
+   https://martinralbrecht.wordpress.com/2loa016/05/30/handling-email-with-emacs/
+
+   imapnotify speaks imap idle with server.
+   #+BEGIN_SRC emacs-lisp
+     (server-start)
+     (use-package prodigy
+       :ensure t
+       :init (prodigy-define-tag
+               :name 'email
+               :ready-message "Checking Email using IMAP IDLE. Ctrl-C to shutdown.")
+       (prodigy-define-service
+         :name "imapnotify gmail"
+         :command "imapnotify"
+         :args (list "-c" (expand-file-name "~/.emacs.d/imapnotify.gmail.js" (getenv "HOME")))
+         :tags '(email)
+         :kill-signal 'sigkill)
+       (prodigy-define-service
+         :name "imapnotify kgtech"
+         :command "imapnotify"
+         :args (list "-c" (expand-file-name "~/.emacs.d/imapnotify.kgtech.js" (getenv "HOME")))
+         :tags '(email)
+         :kill-signal 'sigkill)
+)
+   #+END_SRC
+** M4ue config
+*** global settings
+    #+BEGIN_SRC emacs-lisp
+      (require 'mu4e)
+
+      (global-set-key (kbd "C-c m") 'mu4e)
+      (setq mu4e-maildir (expand-file-name "~/mbsync"))
+      (setq mu4e-attachment-dir  "~/Downloads/Attachments")
+      (setq mu4e-headers-skip-duplicates t)
+
+      ;;rename files when moving - NEEDED FOR MBSYNC
+      (setq mu4e-change-filenames-when-moving t)
+
+      ;;set up queue for offline email
+      ;;use mu mkdir  ~/Maildir/queue to set up first
+      (setq smtpmail-queue-mail nil  ;; start in normal mode
+            smtpmail-queue-dir   "~/mbsync/gmail/queue/cur")
+
+      (setq message-kill-buffer-on-exit t)
+
+      ;; spell check
+      (add-hook 'mu4e-compose-mode-hook
+               (defun my-do-compose-stuff ()
+                  "My settings for message composition."
+                  (set-fill-column 72)
+                  (flyspell-mode)))
+    #+END_SRC
+
+*** editor config
+    #+BEGIN_SRC emacs-lisp
+
+      ; html mails with w3m
+      (setq mu4e-html2text-command "w3m -T text/html -o auto_image=TRUE ")
+
+      ; view images inline
+      (setq mu4e-view-show-images t)
+      (when (fboundp 'imagemagick-register-types)
+        (imagemagick-register-types))
+
+      (add-to-list 'mu4e-view-actions
+        '("ViewInBrowser" . mu4e-action-view-in-browser) t)
+
+      (defun my-mu4e-action-view-with-xwidget (msg)
+        "View the body of the message inside xwidget-webkit."
+        (unless (fboundp 'xwidget-webkit-browse-url)
+          (mu4e-error "No xwidget support available"))
+        (let* ((html (mu4e-message-field msg :body-html))
+                (txt (mu4e-message-field msg :body-txt))
+                (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
+          (unless (or html txt)
+            (mu4e-error "No body part for this message"))
+          (with-temp-buffer
+            ;; simplistic -- but note that it's only an example...
+            (insert (or html (concat "<pre>" txt "</pre>")))
+            (write-file tmpfile)
+            (xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
+
+      (add-to-list 'mu4e-view-actions
+        '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
+    #+END_SRC
+
+*** kgtech config
+    #+BEGIN_SRC emacs-lisp
+       (setq  kgtech-mu4e-context
+           (make-mu4e-context
+             :name "Kgtech"
+             :enter-func (lambda () (mu4e-message "Switch to the Kgtech context"))
+             ;; leave-fun not defined
+             :match-func (lambda (msg)
+                           (when msg
+                             (mu4e-message-contact-field-matches msg
+                               :to "@kgtech.fi")))
+             :vars '( (user-mail-address        . "mikael@kgtech.fi." )
+                      (user-full-name          . "Mikael Kermorgant" )
+                      (mu4e-compose-signature . (concat "Mikael Kermorgant"))
+                      (mu4e-drafts-folder .     "/kgtech/Drafts")
+                      (mu4e-sent-folder   .     "/kgtech/Sent")
+                      (mu4e-trash-folder  .     "/kgtech/Trash")
+                      (mu4e-get-mail-command  . "mbsync kgtech")
+                      (mu4e-maildir-shortcuts .
+                        (("/kgtech/Inbox"               . ?i)
+                         ("/kgtech/Sent"                . ?s)
+                         ("/kgtech/Clients"             . ?c)
+                         ("/kgtech/Trash"               . ?t)
+                         ("/kgtech/Drafts"              . ?d))
+                      )
+       )))
+
+      (setq mu4e-compose-signature
+       (concat
+         "Mikael Kermorgant\n"
+         "https://www.kgtech.fi\n"
+       ))
+    #+END_SRC
+
+*** gmail config
+    #+BEGIN_SRC emacs-lisp
+    (setq  gmail-mu4e-context
+        (make-mu4e-context
+	  :name "gmail"
+	  :enter-func (lambda () (mu4e-message "Switch to the Private context"))
+	  ;; leave-func not defined
+	  :match-func (lambda (msg)
+			(when msg
+			  (mu4e-message-contact-field-matches msg
+			    :to "mikael.kermorgant@gmail.com")))
+	  :vars '( (user-mail-address	   . "mikael.kermorgant@gmail.com"  )
+		   (user-full-name	   . "Mikael Kermorgant" )
+		   (mu4e-compose-signature . (concat "--\n" "Mikael Kermorgant"))
+                   (mu4e-drafts-folder .     "/gmail/[Gmail].Drafts")
+                   (mu4e-sent-folder   .     "/gmail/[Gmail].Sent Mail")
+                   (mu4e-trash-folder  .     "/gmail/[Gmail].Trash")
+                   (mu4e-headers-skip-duplicates . t)
+                   (mu4e-get-mail-command  . "mbsync gmail")
+                   (mu4e-maildir-shortcuts .
+                     (("/gmail/INBOX"               . ?i)
+                      ("/gmail/[Gmail]/Starred"     . ?S)
+                      ("/gmail/[Gmail].Sent Mail"   . ?s)
+                      ("/gmail/[Gmail].Trash"       . ?t)
+                      ("/gmail/[Gmail].All Mail"    . ?a)))
+                   (mu4e-sent-messages-behavior 'delete)
+       )))
+  (setq mu4e-compose-context-policy nil)
+
+
+    #+END_SRC
+
+*** contexts setup
+    #+BEGIN_SRC emacs-lisp
+        (setq mu4e-contexts
+          `( ,gmail-mu4e-context
+            , kgtech-mu4e-context
+      ))
+
+        ;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
+        ;; guess or ask the correct context, e.g.
+
+        ;; start with the first (default) context;
+        ;; default is to ask-if-none (ask when there's no context yet, and none match)
+        ;; (setq mu4e-context-policy 'pick-first)
+
+        ;; compose with the current context is no context matches;
+        ;; default is to ask
+    #+END_SRC
+
+** msmtp
+   #+BEGIN_SRC emacs-lisp
+     ; use msmtp
+     (setq message-send-mail-function 'message-send-mail-with-sendmail)
+     (setq sendmail-program "/usr/bin/msmtp")
+     ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+     (setq message-sendmail-extra-arguments '("--read-envelope-from"))
+     (setq message-sendmail-f-is-evil 't)
+   #+END_SRC
+** org-mode integration
+   #+BEGIN_SRC emacs-lisp
+     ;;store org-mode links to messages
+     (require 'org-mu4e)
+
+     ;;store link to message if in header view, not to header query
+     (setq org-mu4e-link-query-in-headers-mode nil)
+
+     (add-hook 'message-mode-hook 'orgstruct++-mode 'append)
+     (add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
+     ;(add-hook 'message-mode-hook 'org-bullets-mode 'append)
+     ;(add-hook 'message-mode-hook 'orgtbl-mode 'append)
+     (add-hook 'message-mode-hook 'auto-complete-mode 'append)
+   #+END_SRC
