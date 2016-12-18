@@ -67,7 +67,7 @@ Group gmail-mini
 Channel gmail-inbox
 # Channel gmail-starred
 
-
+#####################  Account yahoo #######################
 IMAPAccount yahoo
 Host imap.mail.yahoo.com
 User mkgtfr@yahoo.fr
@@ -93,3 +93,41 @@ SyncState *
 
 Group yahoo
 Channel yahoo-inbox
+
+
+#####################  Account kgtech ######################
+IMAPAccount kgtech
+Host ssl0.ovh.net
+User contact@kgtech.fi
+PassCmd "imap-pass -g contact@kgtech.fi"
+SSLType IMAPS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore kgtech-remote
+Account kgtech
+
+MaildirStore kgtech-local
+Path ~/mbsync/kgtech/
+#MapInbox ~/mbsync/kgtech/INBOX
+Inbox ~/mbsync/kgtech/INBOX
+
+Channel kgtech-inbox
+Master :kgtech-remote:INBOX
+Slave :kgtech-local:INBOX
+Create Slave
+Expunge None
+#Patterns "INBOX" !Queue
+#"Inbox" "Sent" "Fournisseurs"
+SyncState *
+
+Channel kgtech-folders
+Master :kgtech-remote:
+Slave :kgtech-local:
+Create Slave
+Expunge None
+Patterns * !Queue
+SyncState *
+
+Group kgtech
+Channel kgtech-inbox
+Channel kgtech-folders
