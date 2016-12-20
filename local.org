@@ -122,34 +122,32 @@
 
 *** gmail config
     #+BEGIN_SRC emacs-lisp
-    (setq  gmail-mu4e-context
-        (make-mu4e-context
-	  :name "gmail"
-	  :enter-func (lambda () (mu4e-message "Switch to the Private context"))
-	  ;; leave-func not defined
-	  :match-func (lambda (msg)
-			(when msg
-			  (mu4e-message-contact-field-matches msg
-			    :to "mikael.kermorgant@gmail.com")))
-	  :vars '( (user-mail-address	   . "mikael.kermorgant@gmail.com"  )
-		   (user-full-name	   . "Mikael Kermorgant" )
-		   (mu4e-compose-signature . (concat "--\n" "Mikael Kermorgant"))
-                   (mu4e-drafts-folder .     "/gmail/[Gmail].Drafts")
-                   (mu4e-sent-folder   .     "/gmail/[Gmail].Sent Mail")
-                   (mu4e-trash-folder  .     "/gmail/[Gmail].Trash")
-                   (mu4e-headers-skip-duplicates . t)
-                   (mu4e-get-mail-command  . "mbsync gmail")
-                   (mu4e-maildir-shortcuts .
-                     (("/gmail/INBOX"               . ?i)
-                      ("/gmail/[Gmail]/Starred"     . ?S)
-                      ("/gmail/[Gmail].Sent Mail"   . ?s)
-                      ("/gmail/[Gmail].Trash"       . ?t)
-                      ("/gmail/[Gmail].All Mail"    . ?a)))
-                   (mu4e-sent-messages-behavior 'delete)
-       )))
-  (setq mu4e-compose-context-policy nil)
-
-
+      (setq  gmail-mu4e-context
+          (make-mu4e-context
+            :name "gmail"
+            :enter-func (lambda () (mu4e-message "Switch to the Private context"))
+            ;; leave-func not defined
+            :match-func (lambda (msg)
+                          (when msg
+                            (mu4e-message-contact-field-matches msg
+                              :to "mikael.kermorgant@gmail.com")))
+            :vars '( (user-mail-address      . "mikael.kermorgant@gmail.com"  )
+                     (user-full-name         . "Mikael Kermorgant" )
+                     (mu4e-compose-signature . (concat "--\n" "Mikael Kermorgant"))
+                     (mu4e-drafts-folder .     "/gmail/[Gmail].Drafts")
+                     (mu4e-sent-folder   .     "/gmail/[Gmail].Sent Mail")
+                     (mu4e-trash-folder  .     "/gmail/[Gmail].Trash")
+                     (mu4e-headers-skip-duplicates . t)
+                     (mu4e-get-mail-command  . "mbsync gmail")
+                     (mu4e-maildir-shortcuts .
+                       (("/gmail/INBOX"               . ?i)
+                        ("/gmail/[Gmail]/Starred"     . ?S)
+                        ("/gmail/[Gmail].Sent Mail"   . ?s)
+                        ("/gmail/[Gmail].Trash"       . ?t)
+                        ("/gmail/[Gmail].All Mail"    . ?a)))
+                     ;(mu4e-sent-messages-behavior 'delete)
+         )))
+      (setq mu4e-compose-context-policy nil)
     #+END_SRC
 
 *** contexts setup
