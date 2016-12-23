@@ -4,6 +4,15 @@
 ;; You may delete these explanatory comments.
 ;(package-initialize)
 
+
+(eval-when-compile
+  (add-to-list 'load-path "~/.emacs.d/lisp")
+  (require 'use-package))
+
+;(require 'bind-key)                ;; if you use any :bind variant
+
+
+
 (org-babel-load-file "~/.emacs.d/configuration.org")
 
 (custom-set-variables

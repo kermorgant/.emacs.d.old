@@ -26,67 +26,7 @@
 )
    #+END_SRC
 ** M4ue config
-*** global settings
-    #+BEGIN_SRC emacs-lisp
-      (require 'mu4e)
-
-      (global-set-key (kbd "C-c m") 'mu4e)
-      (setq mu4e-maildir (expand-file-name "~/mbsync"))
-      (setq mu4e-attachment-dir  "~/Downloads/Attachments")
-      (setq mu4e-headers-skip-duplicates t)
-
-      ;;rename files when moving - NEEDED FOR MBSYNC
-      (setq mu4e-change-filenames-when-moving t)
-
-      ;;set up queue for offline email
-      ;;use mu mkdir  ~/Maildir/queue to set up first
-      (setq smtpmail-queue-mail nil  ;; start in normal mode
-            smtpmail-queue-dir   "~/mbsync/gmail/queue/cur")
-
-      (setq message-kill-buffer-on-exit t)
-
-      ;; spell check
-      (add-hook 'mu4e-compose-mode-hook
-               (defun my-do-compose-stuff ()
-                  "My settings for message composition."
-                  (set-fill-column 72)
-                  (flyspell-mode)))
-    #+END_SRC
-
-*** editor config
-    #+BEGIN_SRC emacs-lisp
-
-      ; html mails with w3m
-      (setq mu4e-html2text-command "w3m -T text/html -o auto_image=TRUE ")
-
-      ; view images inline
-      (setq mu4e-view-show-images t)
-      (when (fboundp 'imagemagick-register-types)
-        (imagemagick-register-types))
-
-      (add-to-list 'mu4e-view-actions
-        '("ViewInBrowser" . mu4e-action-view-in-browser) t)
-
-      (defun my-mu4e-action-view-with-xwidget (msg)
-        "View the body of the message inside xwidget-webkit."
-        (unless (fboundp 'xwidget-webkit-browse-url)
-          (mu4e-error "No xwidget support available"))
-        (let* ((html (mu4e-message-field msg :body-html))
-                (txt (mu4e-message-field msg :body-txt))
-                (tmpfile (format "%s%x.html" temporary-file-directory (random t))))
-          (unless (or html txt)
-            (mu4e-error "No body part for this message"))
-          (with-temp-buffer
-            ;; simplistic -- but note that it's only an example...
-            (insert (or html (concat "<pre>" txt "</pre>")))
-            (write-file tmpfile)
-            (xwidget-webkit-browse-url (concat "file://" tmpfile) t))))
-
-      (add-to-list 'mu4e-view-actions
-        '("xViewXWidget" . my-mu4e-action-view-with-xwidget) t)
-    #+END_SRC
-
-*** kgtech config
+*** kgtech account config
     #+BEGIN_SRC emacs-lisp
        (setq  kgtech-mu4e-context
            (make-mu4e-context
@@ -120,7 +60,7 @@
        ))
     #+END_SRC
 
-*** gmail config
+*** gmail account config
     #+BEGIN_SRC emacs-lisp
       (setq  gmail-mu4e-context
           (make-mu4e-context
@@ -151,11 +91,7 @@
     #+END_SRC
 
 *** contexts setup
-    #+BEGIN_SRC emacs-lisp
-        (setq mu4e-contexts
-          `( ,gmail-mu4e-context
-            , kgtech-mu4e-context
-      ))
+    #+BEGIN_SRC noemacs-lisp
 
         ;; set `mu4e-context-policy` and `mu4e-compose-policy` to tweak when mu4e should
         ;; guess or ask the correct context, e.g.
@@ -167,16 +103,50 @@
         ;; compose with the current context is no context matches;
         ;; default is to ask
     #+END_SRC
+*** global settings
+    #+BEGIN_SRC emacs-lisp
+      (use-package mu4e
+        :bind ("C-c m" . mu4e)
+        :init
+        (setq mu4e-maildir (expand-file-name "~/mbsync"))
+        (setq mu4e-attachment-dir  "~/Downloads/Attachments")
+        (setq mu4e-headers-skip-duplicates t)
+        ;;rename files when moving - NEEDED FOR MBSYNC
+        (setq mu4e-change-filenames-when-moving t)
+        ;;set up queue for offline email
+        ;;use mu mkdir  ~/Maildir/queue to set up first
+        (setq smtpmail-queue-mail nil  ;; start in normal mode
+              smtpmail-queue-dir   "~/mbsync/gmail/queue/cur")
+        (setq message-kill-buffer-on-exit t)
+        (add-hook 'mu4e-compose-mode-hook
+          (defun my-do-compose-stuff ()
+            "My settings for message composition."
+            (set-fill-column 72)
+            (flyspell-mode)))
+        ; html mails with w3m
+        (setq mu4e-html2text-command "w3m -T text/html -o auto_image=TRUE ")
 
-** msmtp
-   #+BEGIN_SRC emacs-lisp
-     ; use msmtp
-     (setq message-send-mail-function 'message-send-mail-with-sendmail)
-     (setq sendmail-program "/usr/bin/msmtp")
-     ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
-     (setq message-sendmail-extra-arguments '("--read-envelope-from"))
-     (setq message-sendmail-f-is-evil 't)
-   #+END_SRC
+        ; view images inline
+        (setq mu4e-view-show-images t)
+
+        ; use msmtp
+        (setq message-send-mail-function 'message-send-mail-with-sendmail)
+        (setq sendmail-program "/usr/bin/msmtp")
+        ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
+        (setq message-sendmail-extra-arguments '("--read-envelope-from"))
+        (setq message-sendmail-f-is-evil 't)
+        (setq mu4e-contexts
+          `( ,gmail-mu4e-context
+            , kgtech-mu4e-context
+        ))
+
+        :config
+        (when (fboundp 'imagemagick-register-types)
+          (imagemagick-register-types))
+      )
+    #+END_SRC
+
+
 ** org-mode integration
    #+BEGIN_SRC emacs-lisp
      ;;store org-mode links to messages
@@ -191,3 +161,24 @@
      ;(add-hook 'message-mode-hook 'orgtbl-mode 'append)
      (add-hook 'message-mode-hook 'auto-complete-mode 'append)
    #+END_SRC
+* IRC
+
+https://www.gnu.org/software/emacs/manual/html_node/rcirc/Channels.html#Channels
+
+#+BEGIN_SRC emacs-lisp
+  (setq rcirc-authinfo '(("freenode" nickserv "_mikael_" "VT3cqisHkAtUG3h6")
+                          ("vps1.kgtech.fi" bitlbee "mikael" "Ndk7pgszPNxsR6eM")))
+
+  (setq rcirc-server-alist
+        '(("irc.freenode.net" :port 6697 :encryption tls
+           :channels ("#emacs" "#symfony"))
+          ("vps1.kgtech.fi" :port 16667
+           :channels ("#kgtech"))
+         ))
+
+  (add-hook 'rcirc-mode-hook
+            (lambda ()
+              (rcirc-track-minor-mode 1)))
+
+  (setq rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY"))
+#+END_SRC
