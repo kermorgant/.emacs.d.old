@@ -26,42 +26,8 @@
 )
    #+END_SRC
 ** M4ue config
-*** kgtech account config
-    #+BEGIN_SRC emacs-lisp
-       (setq  kgtech-mu4e-context
-           (make-mu4e-context
-             :name "Kgtech"
-             :enter-func (lambda () (mu4e-message "Switch to the Kgtech context"))
-             ;; leave-fun not defined
-             :match-func (lambda (msg)
-                           (when msg
-                             (mu4e-message-contact-field-matches msg
-                               :to "@kgtech.fi")))
-             :vars '( (user-mail-address        . "mikael@kgtech.fi." )
-                      (user-full-name          . "Mikael Kermorgant" )
-                      (mu4e-compose-signature . (concat "Mikael Kermorgant"))
-                      (mu4e-drafts-folder .     "/kgtech/Drafts")
-                      (mu4e-sent-folder   .     "/kgtech/Sent")
-                      (mu4e-trash-folder  .     "/kgtech/Trash")
-                      (mu4e-get-mail-command  . "mbsync kgtech")
-                      (mu4e-maildir-shortcuts .
-                        (("/kgtech/Inbox"               . ?i)
-                         ("/kgtech/Sent"                . ?s)
-                         ("/kgtech/Clients"             . ?c)
-                         ("/kgtech/Trash"               . ?t)
-                         ("/kgtech/Drafts"              . ?d))
-                      )
-       )))
-
-      (setq mu4e-compose-signature
-       (concat
-         "Mikael Kermorgant\n"
-         "https://www.kgtech.fi\n"
-       ))
-    #+END_SRC
-
 *** gmail account config
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
       (setq  gmail-mu4e-context
           (make-mu4e-context
             :name "gmail"
@@ -135,17 +101,71 @@
         ; tell msmtp to choose the SMTP server according to the from field in the outgoing email
         (setq message-sendmail-extra-arguments '("--read-envelope-from"))
         (setq message-sendmail-f-is-evil 't)
+
+        :config
+        (setq mu4e-compose-signature
+         (concat
+           "Mikael Kermorgant\n"
+           "https://www.kgtech.fi\n"
+         ))
+        (setq  kgtech-mu4e-context
+           (make-mu4e-context
+             :name "Kgtech"
+             :enter-func (lambda () (mu4e-message "Switch to the Kgtech context"))
+             ;; leave-fun not defined
+             :match-func (lambda (msg)
+                           (when msg
+                             (mu4e-message-contact-field-matches msg
+                               :to "@kgtech.fi")))
+             :vars '( (user-mail-address        . "mikael@kgtech.fi." )
+                      (user-full-name          . "Mikael Kermorgant" )
+                      (mu4e-compose-signature . (concat "Mikael Kermorgant"))
+                      (mu4e-drafts-folder .     "/kgtech/Drafts")
+                      (mu4e-sent-folder   .     "/kgtech/Sent")
+                      (mu4e-trash-folder  .     "/kgtech/Trash")
+                      (mu4e-get-mail-command  . "mbsync kgtech")
+                      (mu4e-maildir-shortcuts .
+                        (("/kgtech/Inbox"               . ?i)
+                         ("/kgtech/Sent"                . ?s)
+                         ("/kgtech/Clients"             . ?c)
+                         ("/kgtech/Trash"               . ?t)
+                         ("/kgtech/Drafts"              . ?d))
+                      )
+        )))
+        (setq  gmail-mu4e-context
+          (make-mu4e-context
+            :name "gmail"
+            :enter-func (lambda () (mu4e-message "Switch to the Private context"))
+            ;; leave-func not defined
+            :match-func (lambda (msg)
+                          (when msg
+                            (mu4e-message-contact-field-matches msg
+                              :to "mikael.kermorgant@gmail.com")))
+            :vars '( (user-mail-address      . "mikael.kermorgant@gmail.com"  )
+                     (user-full-name         . "Mikael Kermorgant" )
+                     (mu4e-compose-signature . (concat "--\n" "Mikael Kermorgant"))
+                     (mu4e-drafts-folder .     "/gmail/[Gmail].Drafts")
+                     (mu4e-sent-folder   .     "/gmail/[Gmail].Sent Mail")
+                     (mu4e-trash-folder  .     "/gmail/[Gmail].Trash")
+                     (mu4e-headers-skip-duplicates . t)
+                     (mu4e-get-mail-command  . "mbsync gmail")
+                     (mu4e-maildir-shortcuts .
+                       (("/gmail/INBOX"               . ?i)
+                        ("/gmail/[Gmail]/Starred"     . ?S)
+                        ("/gmail/[Gmail].Sent Mail"   . ?s)
+                        ("/gmail/[Gmail].Trash"       . ?t)
+                        ("/gmail/[Gmail].All Mail"    . ?a)))
+                     ;(mu4e-sent-messages-behavior 'delete)
+         )))
         (setq mu4e-contexts
           `( ,gmail-mu4e-context
             , kgtech-mu4e-context
         ))
-
-        :config
+        (setq mu4e-compose-context-policy nil)
         (when (fboundp 'imagemagick-register-types)
           (imagemagick-register-types))
       )
     #+END_SRC
-
 
 ** org-mode integration
    #+BEGIN_SRC emacs-lisp
