@@ -59,7 +59,7 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
     ;I like seeing a little downward-pointing arrow instead of the usual ellipsis
     ;(...) that org displays when there’s stuff under a header.
     (setq org-ellipsis "⤵")
-    (org-reload)
+    ;(org-reload)
   )
 #+END_SRC
 
@@ -595,89 +595,92 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    #+END_SRC
 ** PHP
     TODO = Read this : https://www.philnewton.net/guides/emacs-as-a-php-editor/
+    this seems also interesting :
+    https://github.com/aaronbieber/dotfiles/blob/master/configs/emacs.d/lisp/init-php.el
+
 **** php-mode + hooks
 
      #+BEGIN_SRC emacs-lisp
-                                               ;(use-package ac-php :ensure t)
-       (use-package php-eldoc :ensure t)
+                                                      ;(use-package ac-php :ensure t)
+              (use-package php-eldoc :ensure t)
 
-       (use-package highlight-symbol :ensure t)
+              (use-package highlight-symbol :ensure t)
 
 
-       (defun configure-php-mode ()
-         "Set up all of my PHP mode preferences."
-         (require 'newcomment)
-         (setq auto-fill-function 'do-auto-fill)
-         (setq flycheck-disabled-checkers '(php-phpmd))
+              (defun configure-php-mode ()
+                "Set up all of my PHP mode preferences."
+                (require 'newcomment)
+                (setq auto-fill-function 'do-auto-fill)
+                (setq flycheck-disabled-checkers '(php-phpmd))
 
-         (when (boundp 'company-backends)
-           (setq-local company-backends
-                '((company-dabbrev-code
-                   php-extras-company
-                   company-gtags
-                   company-etags
-                   company-keywords
-                   company-ac-php-backend))))
+                (when (boundp 'company-backends)
+                  (setq-local company-backends
+                       '((company-dabbrev-code
+                          php-extras-company
+                          company-gtags
+                          company-etags
+                          company-keywords
+                          ;company-ac-php-backend
+                          ))))
 
-         (when (fboundp 'php-extras-eldoc-documentation-function)
-           (add-function :before-until (local 'eldoc-documentation-function)
-                         'php-extras-eldoc-documentation-function))
+                (when (fboundp 'php-extras-eldoc-documentation-function)
+                  (add-function :before-until (local 'eldoc-documentation-function)
+                                'php-extras-eldoc-documentation-function))
 
-         (air-set-php-group)
-         (eldoc-mode t)
-         (highlight-symbol-mode)
-         (turn-on-auto-fill)
-         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-         (gtags-mode t)
-         (flycheck-mode)
-         (yas-minor-mode t))
+                ;(air-set-php-group)
+                (eldoc-mode t)
+                (highlight-symbol-mode)
+                (turn-on-auto-fill)
+                (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+                (gtags-mode t)
+                (flycheck-mode)
+                (yas-minor-mode t))
 
-       (defun my-php-mode-hook ()
-         (setq indent-tabs-mode nil)
-         (setq c-basic-offset 4)
-         (setq php-template-compatibility nil)
-         (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
-         (subword-mode 1)
-         (smartparens-mode t)
-         (php-enable-symfony2-coding-style)
-       )
-       (defun my-ac-php-setup ()
-         (auto-complete-mode t)
-         (smartparens-mode t)
-         (require 'ac-php)
-         (setq ac-sources  '(ac-source-php ) )
-         (setq ac-expand-on-auto-complete t)
-         ;(ac-set-trigger-key "TAB")
-         ;(yas-global-mode 1)
-         ;(define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
-         ;(define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-       )
+              (defun my-php-mode-hook ()
+                (setq indent-tabs-mode nil)
+                (setq c-basic-offset 4)
+                (setq php-template-compatibility nil)
+                (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
+                (subword-mode 1)
+                (smartparens-mode t)
+                (php-enable-symfony2-coding-style)
+              )
+              ;(defun my-ac-php-setup ()
+              ;  (auto-complete-mode t)
+              ;  (smartparens-mode t)
+              ;  (require 'ac-php)
+              ;  (setq ac-sources  '(ac-source-php ) )
+              ;  (setq ac-expand-on-auto-complete t)
+              ;  ;(ac-set-trigger-key "TAB")
+              ;  ;(yas-global-mode 1)
+              ;  ;(define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
+              ;  ;(define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+              ;)
 
-       (use-package php-mode
-         :ensure t
-         :init
-         (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-         (add-hook 'php-mode-hook 'my-php-mode-hook)
-         (add-hook 'php-mode-hook 'configure-php-mode)
-         ;(add-hook 'php-mode-hook 'my-ac-php-setup)
-       )
+              (use-package php-mode
+                :ensure t
+                :init
+                (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
+                (add-hook 'php-mode-hook 'my-php-mode-hook)
+                (add-hook 'php-mode-hook 'configure-php-mode)
+              )
 
-       (use-package company-php
-         :ensure t
-         :config
-         (progn
-           (setq-default ac-php-tags-path
-                         (concat user-emacs-cache-directory "/ac-php"))
+              (use-package company-php
+                :ensure t
+                :config
+                (progn
+                  ;(setq-default ac-php-tags-path
+                  ;              (concat user-emacs-cache-directory "/ac-php"))
 
-           (add-hook 'php-mode-hook
-                     '(lambda ()
-                        (unless (executable-find "ctags")
-                          (error "Program: ctags is missing"))
-                        (company-mode t)))
-           (define-key php-mode-map (kbd "C-]") 'ac-php-find-symbol-at-point)
-           (define-key php-mode-map (kbd "C-t") 'ac-php-location-stack-back)
-           )
-         )
+                  (add-hook 'php-mode-hook
+                            '(lambda ()
+                               (unless (executable-find "ctags")
+                                 (error "Program: ctags is missing"))
+                               (company-mode t)))
+                  ;(define-key php-mode-map (kbd "C-]") 'ac-php-find-symbol-at-point)
+                  ;(define-key php-mode-map (kbd "C-t") 'ac-php-location-stack-back)
+                  )
+                )
 
      #+END_SRC
 **** Debugging
@@ -779,6 +782,53 @@ configure auto-complete with tern
      )
    #+END_SRC
 * UI
+** Appearance
+   #+BEGIN_SRC emacs-lisp
+     (global-font-lock-mode 1)
+     (tool-bar-mode 0)
+     (setq-default fill-column 80)
+     (when window-system (scroll-bar-mode -1))
+   #+END_SRC
+** ivy
+
+ In MELPA, Ivy is split into three packages: ivy, swiper and counsel; you can
+ simply install counsel which will bring in the other two as dependencies.
+
+ #+BEGIN_SRC emacs-lisp
+   (use-package counsel
+     :ensure t
+     :init
+     (ivy-mode 1)
+     :config
+     (setq ivy-use-virtual-buffers t)
+     (setq ivy-count-format "(%d/%d) ")
+     (global-set-key (kbd "C-s") 'swiper)
+     (global-set-key (kbd "M-x") 'counsel-M-x)
+     (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+     (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+     (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+     (global-set-key (kbd "<f1> l") 'counsel-find-library)
+     (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+     (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+     (global-set-key (kbd "C-c C-r") 'ivy-resume)
+     (setq ivy-re-builders-alist
+           '((read-file-name-internal . ivy--regex-fuzzy)
+             (t . ivy--regex-plus)))
+     )
+
+   (use-package ivy-hydra :ensure t)
+ #+END_SRC
+
+** hydra
+   #+BEGIN_SRC emacs-lisp
+     (use-package hydra :ensure t)
+                                             ; an example
+     (defhydra hydra-zoom (global-map "<f2>")
+       "zoom"
+       ("g" text-scale-increase "in")
+       ("l" text-scale-decrease "out"))
+
+   #+END_SRC
 ** Terminal
    #+BEGIN_SRC emacs-lisp
         (require 'multi-term)
@@ -790,20 +840,12 @@ configure auto-complete with tern
                  (define-key term-raw-map (kbd "M-o") 'other-window)
                ))
    #+END_SRC
-
-** Appearance
-   #+BEGIN_SRC emacs-lisp
-     (global-font-lock-mode 1)
-     (tool-bar-mode 0)
-     (setq-default fill-column 80)
-     (when window-system (scroll-bar-mode -1))
-   #+END_SRC
 ** Session
    Saving Emacs Sessions
    #+BEGIN_SRC emacs-lisp
-     (desktop-save-mode 1)
-     (setq desktop-restore-eager 5)
-     (setq desktop-save t)
+;     (desktop-save-mode 1)
+;     (setq desktop-restore-eager 5)
+;     (setq desktop-save t)
    #+END_SRC
 
 ** Neotree
@@ -872,13 +914,13 @@ configure auto-complete with tern
    #+END_SRC
 ** ido
 *** ido itself
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
       (ido-mode 1)
       (ido-everywhere 1)
     #+END_SRC
 
 *** ido ubiquitous
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
       (use-package ido-ubiquitous
         :ensure t
         :init
@@ -888,7 +930,7 @@ configure auto-complete with tern
 
 *** vertical mode
     Makes ido-mode display vertically.
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
       (require 'ido-vertical-mode)
       (ido-mode 1)
       (ido-vertical-mode 1)
@@ -896,7 +938,7 @@ configure auto-complete with tern
       (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
     #+END_SRC
 *** flx-ido
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
       (require 'flx-ido)
 
       (flx-ido-mode 1)
@@ -940,6 +982,7 @@ configure auto-complete with tern
     (use-package projectile
       :init
       (setq projectile-switch-project-action 'neotree-projectile-action)
+      (setq projectile-completion-system 'ivy)
       :config
       (projectile-global-mode)
       (defun hrs/search-project-for-symbol-at-point ()
@@ -966,6 +1009,8 @@ configure auto-complete with tern
        (setq magit-display-buffer-function
            #'magit-display-buffer-fullframe-status-v1)
        (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+       :config
+       (setq magit-completing-read-function 'ivy-completing-read)
      )
    #+END_SRC
 
