@@ -371,6 +371,7 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
    #+BEGIN_SRC emacs-lisp
      (setq org-reveal-root "file:///~/.emacs.d/reveal.js")
    #+END_SRC
+
 * Editing Settings
 ** Always indent with spaces
    #+BEGIN_SRC emacs-lisp
@@ -795,6 +796,12 @@ configure auto-complete with tern
  simply install counsel which will bring in the other two as dependencies.
 
  #+BEGIN_SRC emacs-lisp
+
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+
    (use-package counsel
      :ensure t
      :init
@@ -946,7 +953,6 @@ configure auto-complete with tern
       (setq ido-enable-flex-matching t)
       (setq ido-use-faces nil)
     #+END_SRC
-
 * Dired
   Load up the assorted dired extensions.
 
