@@ -186,6 +186,8 @@
 https://www.gnu.org/software/emacs/manual/html_node/rcirc/Channels.html#Channels
 
 #+BEGIN_SRC emacs-lisp
+  (setq rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY"))
+
   (setq rcirc-authinfo '(("freenode" nickserv "_mikael_" "VT3cqisHkAtUG3h6")
                           ("vps1.kgtech.fi" bitlbee "mikael" "Ndk7pgszPNxsR6eM")))
 
@@ -200,5 +202,5 @@ https://www.gnu.org/software/emacs/manual/html_node/rcirc/Channels.html#Channels
             (lambda ()
               (rcirc-track-minor-mode 1)))
 
-  (setq rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY"))
+
 #+END_SRC
