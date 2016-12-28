@@ -818,6 +818,25 @@ configure auto-complete with tern
      )
    #+END_SRC
 * UI
+** split window and move
+   #+BEGIN_SRC emacs-lisp
+     (defun mk/split-below-and-move ()
+       (interactive)
+       (split-window-below)
+       (other-window 1))
+     (defun mk/split-right-and-move ()
+       (interactive)
+       (split-window-right)
+       (other-window 1))
+   #+END_SRC
+
+   + Keybindings
+   #+BEGIN_SRC emacs-lisp
+     (bind-keys
+       ("C-x 2" . mk/split-below-and-move)
+       ("C-x 3" . mk/split-right-and-move))
+   #+END_SRC
+
 ** which key
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
