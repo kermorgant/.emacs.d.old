@@ -1078,9 +1078,27 @@ configure auto-complete with tern
      (global-set-key (kbd "C-c C-<down>")  'windmove-down)
    #+END_SRC
 ** buffer cycling
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC noemacs-lisp
      (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
    #+END_SRC
+
+** winner-mode
+   Winner mode is an Emacs built-in package that lets you undo and redo window
+   configurations. Incredibly useful since I keep splitting and merging windows
+  all the time. Let’s enable it.
+   #+BEGIN_SRC emacs-lisp
+     (when (fboundp 'winner-mode)
+       (winner-mode 1))
+   #+END_SRC
+
+** Toggle zoom
+
+#+BEGIN_SRC emacs-lisp
+(use-package zoom-window
+  :ensure t
+  :bind* (("M-m Z" . zoom-window-zoom)))
+#+END_SRC
+
 ** ido
 *** ido itself
     #+BEGIN_SRC noemacs-lisp
@@ -1206,6 +1224,13 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally)
 #+END_SRC
+* touch typing
+  need a break ?
+  #+BEGIN_SRC emacs-lisp
+    (use-package typit
+      :ensure t
+      :commands (typit))
+  #+END_SRC
 * Local configuration
 #+BEGIN_SRC emacs-lisp
 (when (file-exists-p (concat user-emacs-directory "local.org"))
