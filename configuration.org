@@ -1,4 +1,21 @@
-* Use sensible-defaults.el
+* defaults
+** custom file
+   Emacs has a built-in customization interface that helps beginners customize a
+   lot of options. However it is limited and one needs to grok some Emacs Lisp
+   anyway. Sometimes, I change stuff in my configuration that invokes/adds via
+   the customization interface. This results in automatic inserting of some code
+   into my init.el which messes up the version control. We tell Emacs to store
+   in a separate file and load it if it exists.
+
+
+   #+BEGIN_SRC emacs-lisp
+  (setq custom-file (expand-file-name "custom.el"
+  user-emacs-directory))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+   #+END_SRC
+
+** Use sensible-defaults.el
 
 Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
 
@@ -7,13 +24,13 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
   (sensible-defaults/use-all-settings)
   (sensible-defaults/use-all-keybindings)
 #+END_SRC
-* local paths
+** local paths
 #+BEGIN_SRC emacs-lisp
 (defvar user-emacs-cache-directory
   (concat (getenv "HOME") "/.cache/emacs"))
 
 #+END_SRC
-* Set personal information
+** Set personal information
 
 #+BEGIN_SRC emacs-lisp
   (setq user-full-name "Mikael Kermorgant"
@@ -23,6 +40,31 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
         calendar-location-name "Raseborg, Finland")
 #+END_SRC
 
+** backups
+   #+BEGIN_SRC emacs-lisp
+     ;; Backups at .saves folder in the current folder
+     (setq backup-by-copying t      ; don't clobber symlinks
+           backup-directory-alist
+           '(("." . "~/.saves"))    ; don't litter my fs tree
+           delete-old-versions t
+           kept-new-versions 6
+           kept-old-versions 2
+           version-control t)       ; use versioned backups
+
+   #+END_SRC
+** auto-saving
+   I make sure Emacs auto-saves often but the result is that it messes up my
+   file tree. So, let’s ask Emacs to store its backups in some temporary
+   directory.
+
+   #+BEGIN_SRC emacs-lisp
+     (setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+           create-lockfiles nil)
+   #+END_SRC
+** persistent history
+   #+BEGIN_SRC emacs-lisp
+     (savehist-mode)
+   #+END_SRC
 * Org-mode
 ** ensure presence
 
@@ -480,6 +522,18 @@ https://www.emacswiki.org/emacs/AbbrevMode
 
   (defalias 'redo 'undo-tree-redo)
    #+END_SRC
+* built-in browser
+  #+BEGIN_SRC emacs-lisp
+    (use-package eww
+      :bind* (("M-m g x" . eww)
+              ("M-m g :" . eww-browse-with-external-browser)
+              ("M-m g #" . eww-list-histories)
+              ("M-m g {" . eww-back-url)
+              ("M-m g }" . eww-forward-url))
+      :config
+      (progn
+        (add-hook 'eww-mode-hook 'visual-line-mode)))
+  #+END_SRC
 * rest-client
 nice rest client to play with api
 
@@ -607,86 +661,85 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 **** php-mode + hooks
 
      #+BEGIN_SRC emacs-lisp
-                                                      ;(use-package ac-php :ensure t)
-              (use-package php-eldoc :ensure t)
+                                               ;(use-package ac-php :ensure t)
+       (use-package php-eldoc :ensure t)
 
-              (use-package highlight-symbol :ensure t)
+       (use-package highlight-symbol :ensure t)
 
+       (defun configure-php-mode ()
+         "Set up all of my PHP mode preferences."
+         (require 'newcomment)
+         (setq auto-fill-function 'do-auto-fill)
+         (setq flycheck-disabled-checkers '(php-phpmd))
 
-              (defun configure-php-mode ()
-                "Set up all of my PHP mode preferences."
-                (require 'newcomment)
-                (setq auto-fill-function 'do-auto-fill)
-                (setq flycheck-disabled-checkers '(php-phpmd))
+         (when (boundp 'company-backends)
+           (setq-local company-backends
+                '((company-dabbrev-code
+                   php-extras-company
+                   company-gtags
+                   company-etags
+                   company-keywords
+                   ;company-ac-php-backend
+                   ))))
 
-                (when (boundp 'company-backends)
-                  (setq-local company-backends
-                       '((company-dabbrev-code
-                          php-extras-company
-                          company-gtags
-                          company-etags
-                          company-keywords
-                          ;company-ac-php-backend
-                          ))))
+         (when (fboundp 'php-extras-eldoc-documentation-function)
+           (add-function :before-until (local 'eldoc-documentation-function)
+                         'php-extras-eldoc-documentation-function))
 
-                (when (fboundp 'php-extras-eldoc-documentation-function)
-                  (add-function :before-until (local 'eldoc-documentation-function)
-                                'php-extras-eldoc-documentation-function))
+         ;(air-set-php-group)
+         (eldoc-mode t)
+         (highlight-symbol-mode)
+         (turn-on-auto-fill)
+         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+         (ggtags-mode t)
+         (flycheck-mode)
+         (yas-minor-mode t))
 
-                ;(air-set-php-group)
-                (eldoc-mode t)
-                (highlight-symbol-mode)
-                (turn-on-auto-fill)
-                (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-                (ggtags-mode t)
-                (flycheck-mode)
-                (yas-minor-mode t))
+       (defun my-php-mode-hook ()
+         (setq indent-tabs-mode nil)
+         (setq c-basic-offset 4)
+         (setq php-template-compatibility nil)
+         (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
+         (subword-mode 1)
+         (smartparens-mode t)
+         (php-enable-symfony2-coding-style)
+       )
+       ;(defun my-ac-php-setup ()
+       ;  (auto-complete-mode t)
+       ;  (smartparens-mode t)
+       ;  (require 'ac-php)
+       ;  (setq ac-sources  '(ac-source-php ) )
+       ;  (setq ac-expand-on-auto-complete t)
+       ;  ;(ac-set-trigger-key "TAB")
+       ;  ;(yas-global-mode 1)
+       ;  ;(define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
+       ;  ;(define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
+       ;)
 
-              (defun my-php-mode-hook ()
-                (setq indent-tabs-mode nil)
-                (setq c-basic-offset 4)
-                (setq php-template-compatibility nil)
-                (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
-                (subword-mode 1)
-                (smartparens-mode t)
-                (php-enable-symfony2-coding-style)
-              )
-              ;(defun my-ac-php-setup ()
-              ;  (auto-complete-mode t)
-              ;  (smartparens-mode t)
-              ;  (require 'ac-php)
-              ;  (setq ac-sources  '(ac-source-php ) )
-              ;  (setq ac-expand-on-auto-complete t)
-              ;  ;(ac-set-trigger-key "TAB")
-              ;  ;(yas-global-mode 1)
-              ;  ;(define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
-              ;  ;(define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-              ;)
+       (use-package php-mode
+         :ensure t
+         :init
+         (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
+         (add-hook 'php-mode-hook 'my-php-mode-hook)
+         (add-hook 'php-mode-hook 'configure-php-mode)
+       )
 
-              (use-package php-mode
-                :ensure t
-                :init
-                (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-                (add-hook 'php-mode-hook 'my-php-mode-hook)
-                (add-hook 'php-mode-hook 'configure-php-mode)
-              )
+       (use-package company-php
+         :ensure t
+         :config
+         (progn
+           ;(setq-default ac-php-tags-path
+           ;              (concat user-emacs-cache-directory "/ac-php"))
 
-              (use-package company-php
-                :ensure t
-                :config
-                (progn
-                  ;(setq-default ac-php-tags-path
-                  ;              (concat user-emacs-cache-directory "/ac-php"))
-
-                  (add-hook 'php-mode-hook
-                            '(lambda ()
-                               (unless (executable-find "ctags")
-                                 (error "Program: ctags is missing"))
-                               (company-mode t)))
-                  ;(define-key php-mode-map (kbd "C-]") 'ac-php-find-symbol-at-point)
-                  ;(define-key php-mode-map (kbd "C-t") 'ac-php-location-stack-back)
-                  )
-                )
+           (add-hook 'php-mode-hook
+                     '(lambda ()
+                        (unless (executable-find "ctags")
+                          (error "Program: ctags is missing"))
+                        (company-mode t)))
+           ;(define-key php-mode-map (kbd "C-]") 'ac-php-find-symbol-at-point)
+           ;(define-key php-mode-map (kbd "C-t") 'ac-php-location-stack-back)
+           )
+         )
 
      #+END_SRC
 **** Debugging
@@ -755,9 +808,9 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 
 configure auto-complete with tern
 #+BEGIN_SRC emacs-lisp
-(use-package tern :ensure t :defer t
-  :init (add-hook 'javascript-hook 'tern-mode)
-  (add-to-list 'company-backends 'company-tern))
+  (use-package tern :ensure t :defer t
+    :init (add-hook 'javascript-hook 'tern-mode)
+    (add-to-list 'company-backends 'company-tern))
 #+END_SRC
 
 ** typescript
@@ -927,6 +980,14 @@ configure auto-complete with tern
        :bind* (("M-m f" . avy-goto-char-timer)
                ("M-m F" . avy-goto-line)))
    #+END_SRC
+** smex
+#+BEGIN_SRC emacs-lisp
+(use-package smex
+  :ensure t
+  :config
+  (smex-initialize))
+
+#+END_SRC
 ** hydra
    #+BEGIN_SRC emacs-lisp
      (use-package hydra :ensure t)
