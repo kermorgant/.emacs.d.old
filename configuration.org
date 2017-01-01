@@ -554,23 +554,41 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :ensure t
+    :bind (("M-t"   . company-complete)
+           ("C-c f" . company-files)
+           ("C-c a" . company-dabbrev)
+           ("C-c d" . company-ispell)
+           :map company-active-map
+           ("C-n"    . company-select-next)
+           ("C-p"    . company-select-previous)
+           ([return] . company-complete-selection)
+           ("C-w"    . backward-kill-word)
+           ("C-c"    . company-abort)
+           ("C-c"    . company-search-abort))
+    :diminish (company-mode . "ς")
     :config
     (global-company-mode 1)
     (setq use-package-always-ensure     nil  ;; Disable completion from Company backend for use-package
           company-idle-delay            0.0  ;; 0.1 second delay before the pop-up appears
           company-minimum-prefix-length 2
-    )
+          )
     (add-to-list 'company-backends 'company-restclient)
-  )
+    )
 
-  (use-package company-tern :ensure t
+  (use-package company-tern
+    :ensure t
+    :bind (("C-c t" . company-tern))
     :init
-    (add-hook 'after-init-hook 'global-company-mode)
-  )
+    (setq company-tern-property-marker "")
+    (setq company-tern-meta-as-single-line t)
+    :config
+    (add-to-list 'company-backends 'company-tern))
 
-      ; (global-set-key [tab] 'tab-indent-or-complete)
-      ; (global-set-key "\t" 'company-complete-common)
-
+  (use-package company-web
+    :ensure t
+    :bind (("C-c w" . company-web-html))
+    :config
+    (add-to-list 'company-backends 'company-web-html))
 
   (setq company-dabbrev-downcase nil)
 
@@ -1231,6 +1249,15 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
       :ensure t
       :commands (typit))
   #+END_SRC
+* How do I do something?
+
+#+BEGIN_SRC emacs-lisp
+  (use-package howdoi
+    :ensure t
+    :bind* (("M-m g Y"   . howdoi-query)
+            ("M-m SPC y" . howdoi-query-line-at-point)
+            ("M-m SPC Y" . howdoi-query-insert-code-snippet-at-point)))
+#+END_SRC
 * Local configuration
 #+BEGIN_SRC emacs-lisp
 (when (file-exists-p (concat user-emacs-directory "local.org"))
