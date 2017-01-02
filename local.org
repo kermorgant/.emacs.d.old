@@ -8,9 +8,12 @@
      (server-start)
      (use-package prodigy
        :ensure t
-       :init (prodigy-define-tag
-               :name 'email
-               :ready-message "Checking Email using IMAP IDLE. Ctrl-C to shutdown.")
+       :commands (prodigy)
+       :bind* (("M-m s b" . prodigy))
+       :init
+       (prodigy-define-tag
+        :name 'email
+        :ready-message "Checking Email using IMAP IDLE. Ctrl-C to shutdown.")
        (prodigy-define-service
          :name "imapnotify gmail"
          :command "imapnotify"
@@ -23,7 +26,7 @@
          :args (list "-c" (expand-file-name "~/.emacs.d/imapnotify.kgtech.js" (getenv "HOME")))
          :tags '(email)
          :kill-signal 'sigkill)
-)
+       )
    #+END_SRC
 ** M4ue config
 *** gmail account config
