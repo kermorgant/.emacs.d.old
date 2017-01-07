@@ -601,6 +601,10 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 #+END_SRC
 
 * Coding
+** silver search
+#+BEGIN_SRC emacs-lisp
+(use-package ag :ensure t)
+#+END_SRC
 ** smartparens
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
