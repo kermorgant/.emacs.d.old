@@ -928,6 +928,12 @@ configure auto-complete with tern
      (setq projectile-enable-caching t)
    #+END_SRC
 * Sysadmin
+** tramp mode
+   #+BEGIN_SRC emacs-lisp
+     (setq tramp-default-method "ssh"
+           tramp-backup-directory-alist backup-directory-alist
+           tramp-ssh-controlmaster-options "ssh")
+   #+END_SRC
 ** Docker
    #+BEGIN_SRC emacs-lisp
      (use-package dockerfile-mode
