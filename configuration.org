@@ -105,40 +105,6 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
   )
 #+END_SRC
 
-** Shortcuts
-   #+BEGIN_SRC emacs-lisp
-   #+END_SRC
-** filetype association
-   #+BEGIN_SRC emacs-lisp
-   #+END_SRC
-** Conflicts
-*** shift-select
-    shift-select works where org-mode does not have special functionality
-
-    #+BEGIN_SRC emacs-lisp
-
-    #+END_SRC
-** Display prefs
-
-
-
-   #+BEGIN_SRC noemacs-lisp
-     (add-hook 'org-mode-hook
-               (lambda ()
-                 (org-bullets-mode t)))
-   #+END_SRC
-
-
-
-   #+BEGIN_SRC emacs-lisp
-
-   #+END_SRC
-
-
-
-   #+BEGIN_SRC emacs-lisp
-
-   #+END_SRC
 ** Task and org-capture management
 
 #+BEGIN_SRC emacs-lisp
@@ -556,7 +522,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
     :ensure t
     :bind (("M-t"   . company-complete)
            ("C-c f" . company-files)
-           ("C-c a" . company-dabbrev)
+           ("M-/" . company-dabbrev) ; dabbrev is for local variables
            ("C-c d" . company-ispell)
            :map company-active-map
            ("C-n"    . company-select-next)
@@ -646,7 +612,9 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :config
        (require 'smartparens-config)
        (smartparens-global-mode)
-       (smartparens-global-strict-mode)
+       (sp-pair "%" "%" :wrap "C-%")
+       (sp-pair "<" ">" :wrap "C->")
+       ;(smartparens-global-strict-mode)
        (show-smartparens-global-mode)
        (which-key-add-key-based-replacements
          "M-m m" "move prefix"))
@@ -852,6 +820,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        (setq web-mode-script-padding 1)
        ;; For multi-line blocks
        (setq web-mode-block-padding 0)
+       (setq web-mode-enable-auto-pairing nil)
+
      )
 
    #+END_SRC
