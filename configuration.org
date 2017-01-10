@@ -1008,9 +1008,19 @@ configure auto-complete with tern
      (define-key ivy-minibuffer-map (kbd "<return>") 'ivy-alt-done)
      (define-key ivy-minibuffer-map (kbd "C-f") 'mk-ivy-open-current-directory)
      (setq ivy-extra-directories nil)
+
+     (global-set-key (kbd "C-c g") 'counsel-git)
+     (global-set-key (kbd "C-c j") 'counsel-git-grep)
+     (global-set-key (kbd "C-c k") 'counsel-ag)
    )
    (use-package ivy-hydra :ensure t)
  #+END_SRC
+
+While we're here, let's also increase recentf's items
+
+#+BEGIN_SRC emacs-lisp
+  (setq recentf-max-menu-items 100)
+#+END_SRC
 
 ** avy
    Avy lets you jump anywhere on screen based on character, characters, lines or
@@ -1258,6 +1268,7 @@ configure auto-complete with tern
     :bind* (("M-m g l" . git-timemachine-toggle)
             ("M-m g L" . git-timemachine-switch-branch)))
 #+END_SRC
+
 ** ediff
 
   Ediff mode is a UNIX patching tool and my version controlling
@@ -1277,8 +1288,8 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
       :ensure t
       :commands (typit))
   #+END_SRC
-* How do I do something?
-
+* Online help
+** how do I ?
 #+BEGIN_SRC emacs-lisp
   (use-package howdoi
     :ensure t
@@ -1286,6 +1297,10 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
             ("M-m SPC y" . howdoi-query-line-at-point)
             ("M-m SPC Y" . howdoi-query-insert-code-snippet-at-point)))
 #+END_SRC
+** Stack Exchange
+   #+BEGIN_SRC emacs-lisp
+  (use-package sx :ensure t)
+   #+END_SRC
 * Local configuration
 #+BEGIN_SRC emacs-lisp
 (when (file-exists-p (concat user-emacs-directory "local.org"))
