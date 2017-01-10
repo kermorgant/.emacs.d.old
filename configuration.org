@@ -568,9 +568,18 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 
 * Coding
 ** silver search
-#+BEGIN_SRC emacs-lisp
-(use-package ag :ensure t)
-#+END_SRC
+   How could I work without it ?
+   #+BEGIN_SRC emacs-lisp
+     (use-package ag :ensure t)
+   #+END_SRC
+** code folding
+   #+BEGIN_SRC emacs-lisp
+     (use-package origami :ensure t
+       :commands (origami-toggle-node)
+       :bind* (("M-m -" . origami-toggle-node)))
+   #+END_SRC
+
+
 ** smartparens
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
@@ -879,23 +888,18 @@ configure auto-complete with tern
 
   #+END_SRC
 
-** projectile
-   #+BEGIN_SRC noemacs-lisp
-     (projectile-mode)
+** less/sass/css
+   nice to have tool (highlights color hexadecimal values with matching color)
+   #+BEGIN_SRC emacs-lisp
+     (use-package rainbow-mode :ensure t)
+   #+END_SRC
 
-     (defun hrs/search-project-for-symbol-at-point ()
-          "Use `projectile-ag' to search the current project for `symbol-at-point'."
-          (interactive)
-          (projectile-ag (projectile-symbol-at-point)))
+   less-css-mode is for less files
+   #+BEGIN_SRC emacs-lisp
+     (use-package less-css-mode :ensure t
+       :mode ("\\.less\\'" . less-css-mode)
+     )
 
-     (global-set-key (kbd "C-c v") 'projectile-ag)
-     (global-set-key (kbd "C-c C-v") 'hrs/search-project-for-symbol-at-point)
-
-     (setq projectile-switch-project-action 'neotree-projectile-action)
-
-     (define-key projectile-mode-map (kbd "s-f") 'projectile-find-file)
-
-     (setq projectile-enable-caching t)
    #+END_SRC
 * Sysadmin
 ** tramp mode
