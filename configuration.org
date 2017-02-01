@@ -473,6 +473,7 @@ https://www.emacswiki.org/emacs/AbbrevMode
    #+END_SRC
 
 ** Custom key-bindings
+
    Just some handy functions.
 
    #+BEGIN_SRC emacs-lisp
@@ -488,6 +489,21 @@ https://www.emacswiki.org/emacs/AbbrevMode
 
   (defalias 'redo 'undo-tree-redo)
    #+END_SRC
+** Cycle in the beginning of line
+
+   #+BEGIN_SRC emacs-lisp
+     (defun kgt::cycle-bol-boi ()
+       "Cycle between beginning of line and beginning of indentation."
+       (interactive)
+       (let ((orig (point)))
+         (back-to-indentation)
+         (when (= orig (point))
+           (move-beginning-of-line 1))))
+
+     (global-set-key (kbd "C-a") 'kgt::cycle-bol-boi)
+
+   #+END_SRC
+
 * built-in browser
   #+BEGIN_SRC emacs-lisp
     (use-package eww
