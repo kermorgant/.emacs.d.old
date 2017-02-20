@@ -178,15 +178,14 @@ https://www.gnu.org/software/emacs/manual/html_node/rcirc/Channels.html#Channels
 #+BEGIN_SRC emacs-lisp
   (setq rcirc-omit-responses '("JOIN" "PART" "QUIT" "NICK" "AWAY"))
 
-  (setq rcirc-authinfo '(("freenode" nickserv "_mikael_" "VT3cqisHkAtUG3h6")
+  (setq rcirc-authinfo '(("irc.freenode.net" nickserv "_mikael_" "VT3cqisHkAtUG3h6")
                           ("vps1.kgtech.fi" bitlbee "mikael" "Ndk7pgszPNxsR6eM")))
 
   (setq rcirc-server-alist
-        '(("irc.freenode.net" :port 6697 :encryption tls
-           :channels ("#emacs" "#symfony"))
-          ("vps1.kgtech.fi" :port 16667
-           :channels ("#kgtech"))
-         ))
+        '(("irc.freenode.net" :port 6697 :encryption tls :channels ("#emacs" "#symfony"))
+          ("vps1.kgtech.fi" :port 16667  :channels ("#kgtech"))
+         )
+  )
 
   (add-hook 'rcirc-mode-hook
             (lambda ()
