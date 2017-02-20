@@ -1240,8 +1240,7 @@ While we're here, let's also increase recentf's items
     (use-package projectile
       :ensure t
       :init
-      ;(setq projectile-switch-project-action 'neotree-projectile-action)
-      (setq projectile-switch-project-action 'counsel-projectile-switch-project)
+      (setq projectile-switch-project-action 'projectile-dired)
       (setq projectile-completion-system 'ivy)
       :config
       (setq projectile-keymap-prefix (kbd "s-p"))
