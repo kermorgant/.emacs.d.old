@@ -1004,6 +1004,7 @@ configure auto-complete with tern
 ** Appearance
    #+BEGIN_SRC emacs-lisp
      (global-font-lock-mode 1)
+     (set-frame-font "Inconsolata")
      (tool-bar-mode 0)
      (setq-default fill-column 80)
      (when window-system (scroll-bar-mode -1))
@@ -1239,31 +1240,6 @@ While we're here, let's also increase recentf's items
       (setq ido-enable-flex-matching t)
       (setq ido-use-faces nil)
     #+END_SRC
-* Dired
-  Load up the assorted dired extensions.
-
-  #+BEGIN_SRC emacs-lisp
-    (use-package dired+
-      :ensure t)
-    (use-package dired-open
-      :ensure t)
-  #+END_SRC
-
-  Kill buffers of files/directories that are deleted in dired.
-  #+BEGIN_SRC emacs-lisp
-    (setq dired-clean-up-buffers-too t)
-  #+END_SRC
-
-  Always copy directories recursively instead of asking every time.
-  #+BEGIN_SRC emacs-lisp
-    (setq dired-recursive-copies 'always)
-  #+END_SRC
-
-  Ask before recursively deleting a directory, though.
-  #+BEGIN_SRC emacs-lisp
-    (setq dired-recursive-deletes 'top)
-  #+END_SRC
-
 * Projectile
 
   Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
@@ -1291,6 +1267,40 @@ While we're here, let's also increase recentf's items
 
       (use-package counsel-projectile :ensure t)
            ;(setq projectile-enable-caching t)
+  #+END_SRC
+
+** frame naming & projectile
+   #+BEGIN_SRC emacs-lisp
+     (use-package nameframe :ensure t)
+     (use-package nameframe-projectile :ensure t
+      :bind ("M-p" . nameframe-switch-frame)
+      :config
+      (nameframe-projectile-mode t)
+     )
+   #+END_SRC
+* Dired
+  Load up the assorted dired extensions.
+
+  #+BEGIN_SRC emacs-lisp
+    (use-package dired+
+      :ensure t)
+    (use-package dired-open
+      :ensure t)
+  #+END_SRC
+
+  Kill buffers of files/directories that are deleted in dired.
+  #+BEGIN_SRC emacs-lisp
+    (setq dired-clean-up-buffers-too t)
+  #+END_SRC
+
+  Always copy directories recursively instead of asking every time.
+  #+BEGIN_SRC emacs-lisp
+    (setq dired-recursive-copies 'always)
+  #+END_SRC
+
+  Ask before recursively deleting a directory, though.
+  #+BEGIN_SRC emacs-lisp
+    (setq dired-recursive-deletes 'top)
   #+END_SRC
 * git
 ** magit
