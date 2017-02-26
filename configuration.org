@@ -734,6 +734,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :init
        (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
        (setq yaml-indent-offset 4)
+       (auto-fill-mode -1)
+       (turn-off-auto-fill)
      )
    #+END_SRC
 ** PHP
