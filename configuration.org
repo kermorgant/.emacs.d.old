@@ -491,6 +491,7 @@ https://www.emacswiki.org/emacs/AbbrevMode
    #+END_SRC
 ** Cycle in the beginning of line
 
+
    #+BEGIN_SRC emacs-lisp
      (defun kgt::cycle-bol-boi ()
        "Cycle between beginning of line and beginning of indentation."
@@ -502,6 +503,12 @@ https://www.emacswiki.org/emacs/AbbrevMode
 
      (global-set-key (kbd "C-a") 'kgt::cycle-bol-boi)
 
+   #+END_SRC
+** new line at the end
+
+   Avoid reaching for the return key to add newlines!
+   #+BEGIN_SRC emacs-lisp
+     (setq next-line-add-newlines t)
    #+END_SRC
 
 * built-in browser
@@ -632,8 +639,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :config
        (require 'smartparens-config)
        (smartparens-global-mode)
-       (sp-pair "%" "%" :wrap "C-%")
-       (sp-pair "<" ">" :wrap "C->")
+       (sp-local-pair 'web-mode "{%" "%}" :wrap "C-%")
+       (sp-local-pair 'web-mode "<" ">" :wrap "C->")
        ;(smartparens-global-strict-mode)
        (show-smartparens-global-mode)
        (which-key-add-key-based-replacements
@@ -705,11 +712,11 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 
 ** Yaml
    #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode
-       :ensure t
+     (use-package yaml-mode :ensure t
        :init
        (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
        (setq yaml-indent-offset 4)
+       (add-hook 'php-mode-hook (auto-fill-mode 0))
      )
    #+END_SRC
 ** PHP
@@ -748,7 +755,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
          ;(air-set-php-group)
          (eldoc-mode t)
          (highlight-symbol-mode)
-         (turn-on-auto-fill)
+         (auto-fill-mode 0)
          (add-to-list 'write-file-functions 'delete-trailing-whitespace)
          (ggtags-mode t)
          (flycheck-mode)
