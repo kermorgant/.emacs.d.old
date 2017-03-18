@@ -564,6 +564,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
     (add-to-list 'company-backends 'company-restclient)
     )
 
+  (use-package company-restclient :ensure t)
+
   (use-package company-tern
     :ensure t
     :bind (("C-c t" . company-tern))
