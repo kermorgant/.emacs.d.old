@@ -1242,7 +1242,17 @@ While we're here, let's also increase recentf's items
       (setq ido-enable-flex-matching t)
       (setq ido-use-faces nil)
     #+END_SRC
-* Projectile
+* Projectile + perspective
+
+** perspective
+
+#+BEGIN_SRC emacs-lisp
+(use-package perspective :ensure t
+  :config
+  (persp-mode))
+#+END_SRC
+
+** projectile
 
   Projectile's default binding of =projectile-ag= to =C-c p s s= is clunky
   enough that I rarely use it (and forget it when I need it). This binds the
@@ -1271,6 +1281,17 @@ While we're here, let's also increase recentf's items
            ;(setq projectile-enable-caching t)
   #+END_SRC
 
+** persp-projectile
+
+#+BEGIN_SRC emacs-lisp
+(use-package persp-projectile :ensure t
+  :defer 1
+  :bind (("C-c p s" . projectile-persp-switch-project))
+  :config
+  (persp-mode)
+)
+
+#+END_SRC
 ** frame naming & projectile
    #+BEGIN_SRC emacs-lisp
      (use-package nameframe :ensure t)
