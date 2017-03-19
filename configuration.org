@@ -491,6 +491,7 @@ https://www.emacswiki.org/emacs/AbbrevMode
    #+END_SRC
 ** Cycle in the beginning of line
 
+
    #+BEGIN_SRC emacs-lisp
      (defun kgt::cycle-bol-boi ()
        "Cycle between beginning of line and beginning of indentation."
@@ -502,6 +503,12 @@ https://www.emacswiki.org/emacs/AbbrevMode
 
      (global-set-key (kbd "C-a") 'kgt::cycle-bol-boi)
 
+   #+END_SRC
+** new line at the end
+
+   Avoid reaching for the return key to add newlines!
+   #+BEGIN_SRC emacs-lisp
+     (setq next-line-add-newlines t)
    #+END_SRC
 
 * built-in browser
@@ -556,6 +563,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
           )
     (add-to-list 'company-backends 'company-restclient)
     )
+
+  (use-package company-restclient :ensure t)
 
   (use-package company-tern
     :ensure t
@@ -632,8 +641,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :config
        (require 'smartparens-config)
        (smartparens-global-mode)
-       (sp-pair "%" "%" :wrap "C-%")
-       (sp-pair "<" ">" :wrap "C->")
+       (sp-local-pair 'web-mode "{%" "%}" :wrap "C-%")
+       (sp-local-pair 'web-mode "<" ">" :wrap "C->")
        ;(smartparens-global-strict-mode)
        (show-smartparens-global-mode)
        (which-key-add-key-based-replacements
@@ -729,13 +738,11 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 
 ** Yaml
    #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode
-       :ensure t
+     (use-package yaml-mode :ensure t
        :init
        (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
        (setq yaml-indent-offset 4)
-       (auto-fill-mode -1)
-       (turn-off-auto-fill)
+       (add-hook 'php-mode-hook (auto-fill-mode 0))
      )
    #+END_SRC
 ** PHP
@@ -746,7 +753,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 **** php-mode + hooks
 
      #+BEGIN_SRC emacs-lisp
-                                                  ;(use-package ac-php :ensure t)
           (use-package php-eldoc :ensure t)
 
           (use-package highlight-symbol :ensure t)
@@ -771,10 +777,9 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
               (add-function :before-until (local 'eldoc-documentation-function)
                             'php-extras-eldoc-documentation-function))
 
-            ;(air-set-php-group)
             (eldoc-mode t)
             (highlight-symbol-mode)
-            (turn-on-auto-fill)
+            (auto-fill-mode 0)
             (add-to-list 'write-file-functions 'delete-trailing-whitespace)
             (ggtags-mode t)
             (flycheck-mode)
@@ -789,17 +794,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
             (smartparens-mode t)
             (php-enable-symfony2-coding-style)
           )
-          ;(defun my-ac-php-setup ()
-          ;  (auto-complete-mode t)
-          ;  (smartparens-mode t)
-          ;  (require 'ac-php)
-          ;  (setq ac-sources  '(ac-source-php ) )
-          ;  (setq ac-expand-on-auto-complete t)
-          ;  ;(ac-set-trigger-key "TAB")
-          ;  ;(yas-global-mode 1)
-          ;  ;(define-key php-mode-map  (kbd "C-]") 'ac-php-find-symbol-at-point)   ;goto define
-          ;  ;(define-key php-mode-map  (kbd "C-t") 'ac-php-location-stack-back   ) ;go back
-          ;)
 
           (use-package php-mode
             :ensure t
@@ -1006,7 +1000,8 @@ configure auto-complete with tern
 ** Appearance
    #+BEGIN_SRC emacs-lisp
      (global-font-lock-mode 1)
-     (set-frame-font "Inconsolata")
+     ;(set-frame-font "Inconsolata")
+     (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
      (tool-bar-mode 0)
      (setq-default fill-column 80)
      (when window-system (scroll-bar-mode -1))
