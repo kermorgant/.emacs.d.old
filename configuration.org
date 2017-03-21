@@ -1048,9 +1048,13 @@ configure auto-complete with tern
      (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
      (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
      (global-set-key (kbd "C-c C-r") 'ivy-resume)
+
      (setq ivy-re-builders-alist
-           '((read-file-name-internal . ivy--regex-fuzzy)
-             (t . ivy--regex-plus)))
+      '((t . ivy--regex-fuzzy)))
+
+     ;(setq ivy-re-builders-alist
+     ;      '((read-file-name-internal . ivy--regex-fuzzy)
+     ;        (t . ivy--regex-plus)))
 
      (define-key ivy-minibuffer-map (kbd "TAB") 'mk-ivy-partial-or-done)
      (define-key ivy-minibuffer-map (kbd "<return>") 'ivy-alt-done)
@@ -1238,7 +1242,6 @@ While we're here, let's also increase recentf's items
       (setq ido-use-faces nil)
     #+END_SRC
 * Projectile + perspective
-
 ** perspective
 
 #+BEGIN_SRC emacs-lisp
@@ -1272,7 +1275,10 @@ While we're here, let's also increase recentf's items
       (projectile-global-mode)
       )
 
-      (use-package counsel-projectile :ensure t)
+      (use-package counsel-projectile :ensure t
+        :bind (("C-x ," . counsel-projectile-switch-to-buffer)
+               ("C-x C-," . counsel-projectile-find-file))
+      )
            ;(setq projectile-enable-caching t)
   #+END_SRC
 
