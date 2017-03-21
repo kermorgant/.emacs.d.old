@@ -1185,11 +1185,6 @@ While we're here, let's also increase recentf's items
      (global-set-key (kbd "C-c C-<up>")    'windmove-up)
      (global-set-key (kbd "C-c C-<down>")  'windmove-down)
    #+END_SRC
-** buffer cycling
-   #+BEGIN_SRC noemacs-lisp
-     (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
-   #+END_SRC
-
 ** winner-mode
    Winner mode is an Emacs built-in package that lets you undo and redo window
    configurations. Incredibly useful since I keep splitting and merging windows
@@ -1241,6 +1236,15 @@ While we're here, let's also increase recentf's items
       (setq ido-enable-flex-matching t)
       (setq ido-use-faces nil)
     #+END_SRC
+** buffers
+   #+BEGIN_SRC emacs-lisp
+     (use-package ace-jump-mode
+       :ensure t
+       :init
+        (setq ajb-bs-configuration "projectile")
+       )
+   #+END_SRC
+
 * Projectile + perspective
 ** perspective
 
@@ -1276,7 +1280,7 @@ While we're here, let's also increase recentf's items
       )
 
       (use-package counsel-projectile :ensure t
-        :bind (("C-x ," . counsel-projectile-switch-to-buffer)
+        :bind (("C-x ," . ace-jump-projectile-buffers)
                ("C-x C-," . counsel-projectile-find-file))
       )
            ;(setq projectile-enable-caching t)
@@ -1284,15 +1288,15 @@ While we're here, let's also increase recentf's items
 
 ** persp-projectile
 
-#+BEGIN_SRC emacs-lisp
-(use-package persp-projectile :ensure t
-  :defer 1
-  :bind (("C-c p s" . projectile-persp-switch-project))
-  :config
-  (persp-mode)
-)
-
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package persp-projectile
+       :ensure t
+  ;     :defer 1
+       :bind (("C-c p p" . projectile-persp-switch-project))
+       :config
+       (persp-mode)
+       )
+   #+END_SRC
 ** frame naming & projectile
    #+BEGIN_SRC emacs-lisp
      (use-package nameframe :ensure t)
