@@ -709,21 +709,31 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
                  (define-key yas/keymap [tab] 'yas/next-field)))
    #+END_SRC
 
+
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet :ensure t :defer 30
-       :bind (("C-o" . yas-insert-snippet))
-       :diminish (yas-minor-mode . "γ")
-       :config
-       (setq yas/triggers-in-field t); Enable nested triggering of snippets
-       (setq yas-prompt-functions '(yas-completing-prompt))
-       (add-hook 'snippet-mode-hook '(lambda () (setq-local require-final-newline nil)))
-       (yas-global-mode))
+                  :bind (("C-o" . yas-insert-snippet))
+                  :diminish (yas-minor-mode . "γ")
+                  :config
+                  ;(setq yas/triggers-in-field t); Enable nested triggering of snippets
+                  ;(setq yas-prompt-functions '(yas-completing-prompt))
+                  ;(add-hook 'snippet-mode-hook '(lambda () (setq-local require-final-newline nil)))
+                  (yas-global-mode))
 
-       ;(setq yas-fallback-behavior 'indent-line
-       ;      yas-snippet-dirs '("~/.emacs.d/snippets/angular/")))
+                                             ;(setq yas-fallback-behavior 'indent-line
+                                             ;      yas-snippet-dirs '("~/.emacs.d/snippets/angular/")))
 
-     ; https://github.com/magnars/angular-snippets.el
-     ;(use-package angular-snippets :ensure t :defer 30)
+                                             ; https://github.com/magnars/angular-snippets.el
+                                             ;(use-package angular-snippets :ensure t :defer 30)
+
+            ;; (use-package php-auto-yasnippets
+            ;; :config
+            ;; (progn
+            ;;   (setq php-auto-yasnippet-php-program
+            ;;   (concat user-emacs-directory  "lisp/Create-PHP-YASnippet.php"))
+            ;;   (define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
+            ;; ))
+
    #+END_SRC
 ** Highlight uncommitted changes
    #+BEGIN_SRC emacs-lisp
@@ -738,11 +748,9 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    Expand region increases the selected region by semantic units. Just keep
    pressing the key until it selects what you want.
    #+BEGIN_SRC emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :init
-       :bind (("M-é" . er/expand-region)
-              ("C-M-é" . er/contract-region)))
+     (require 'expand-region)
+     (global-set-key (kbd "M-é") 'er/expand-region)
+     (global-set-key (kbd "C-M-é") 'er/contract-region)
    #+END_SRC
 ** powerline
 
@@ -844,15 +852,6 @@ lexical
               ;(define-key php-mode-map (kbd "C-t") 'ac-php-location-stack-back)
               )
             )
-
-            (use-package php-auto-yasnippets
-            :config
-            (progn
-              (setq php-auto-yasnippet-php-program
-              (concat user-emacs-directory  "lisp/Create-PHP-YASnippet.php"))
-              (define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
-            ))
-
      #+END_SRC
 
 
