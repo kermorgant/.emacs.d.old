@@ -1,4 +1,5 @@
 
+
 * defaults
 ** custom file
    Emacs has a built-in customization interface that helps beginners customize a
@@ -184,7 +185,7 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
         "Open the master org TODO list."
         (interactive)
         (find-file org-index-file)
-        (flycheck-mode -1)
+        ;(flycheck-mode -1)
         (end-of-buffer))
 
       (global-set-key (kbd "C-c i") 'open-index-file)
@@ -743,30 +744,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :bind (("M-é" . er/expand-region)
               ("C-M-é" . er/contract-region)))
    #+END_SRC
-
-** Flycheck
-   Read this : http://www.flycheck.org/en/latest/user/quickstart.html
-
-   #+BEGIN_SRC emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :init
-       (global-flycheck-mode)
-     )
-
-     (use-package flycheck-color-mode-line
-       :ensure t
-       :no-require t
-       :config
-       (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
-     )
-     (use-package flycheck-pos-tip
-       :ensure t
-       :no-require t
-       :config
-       (add-hook 'flycheck-mode-hook 'flycheck-pos-tip-mode)
-     )
-   #+END_SRC
 ** powerline
 
    #+BEGIN_SRC emacs-lisp
@@ -830,7 +807,7 @@ lexical
             (auto-fill-mode 0)
             (add-to-list 'write-file-functions 'delete-trailing-whitespace)
             (ggtags-mode t)
-            (flycheck-mode)
+           ; (flycheck-mode)
             (yas-minor-mode t))
 
           (defun my-php-mode-hook ()
@@ -958,7 +935,7 @@ lexical
     (defun setup-tide-mode ()
       (interactive)
       (tide-setup)
-      (flycheck-mode +1)
+      ;(flycheck-mode +1)
       (setq flycheck-check-syntax-automatically '(save mode-enabled))
       ;(eldoc-mode +1)
       (tide-hl-identifier-mode +1)
@@ -996,6 +973,31 @@ lexical
        :mode ("\\.less\\'" . less-css-mode)
      )
 
+   #+END_SRC
+
+** Flycheck
+   Read this : http://www.flycheck.org/en/latest/user/quickstart.html
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :init
+       (global-flycheck-mode t)
+       (add-hook 'after-init-hook #'global-flycheck-mode)
+     )
+
+     (use-package flycheck-color-mode-line
+       :ensure t
+       :no-require t
+       :config
+       (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
+     )
+     (use-package flycheck-pos-tip
+       :ensure t
+       :no-require t
+       :config
+       (add-hook 'flycheck-mode-hook 'flycheck-pos-tip-mode)
+     )
    #+END_SRC
 * git
 ** magit
