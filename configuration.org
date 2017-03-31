@@ -604,7 +604,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :bind* (("M-m -" . origami-toggle-node)))
    #+END_SRC
 
-
 ** smartparens
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
@@ -654,13 +653,13 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 ** yasnippets
 
    The latest version of yasnippet doesn't play well with Org mode.
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC noemacs-lisp
      (defun yas/org-very-safe-expand ()
        (let ((yas/fallback-behavior 'return-nil)) (yas/expand)))
    #+END_SRC
 
    Tell org-mode to use that function
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC noemacs-lisp
   (add-hook 'org-mode-holok
             (lambda ()
               (make-variable-buffer-local 'yas/trigger-key)
@@ -671,19 +670,28 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet :ensure t :defer 30
-       :bind (("C-o" . yas-insert-snippet))
-       :diminish (yas-minor-mode . "γ")
-       :config
-       (setq yas/triggers-in-field t); Enable nested triggering of snippets
-       (setq yas-prompt-functions '(yas-completing-prompt))
-       (add-hook 'snippet-mode-hook '(lambda () (setq-local require-final-newline nil)))
-       (yas-global-mode))
+                  :bind (("C-o" . yas-insert-snippet))
+                  :diminish (yas-minor-mode . "γ")
+                  :config
+                  ;(setq yas/triggers-in-field t); Enable nested triggering of snippets
+                  ;(setq yas-prompt-functions '(yas-completing-prompt))
+                  ;(add-hook 'snippet-mode-hook '(lambda () (setq-local require-final-newline nil)))
+                  (yas-global-mode))
 
-       ;(setq yas-fallback-behavior 'indent-line
-       ;      yas-snippet-dirs '("~/.emacs.d/snippets/angular/")))
+                                             ;(setq yas-fallback-behavior 'indent-line
+                                             ;      yas-snippet-dirs '("~/.emacs.d/snippets/angular/")))
 
-     ; https://github.com/magnars/angular-snippets.el
-     ;(use-package angular-snippets :ensure t :defer 30)
+                                             ; https://github.com/magnars/angular-snippets.el
+                                             ;(use-package angular-snippets :ensure t :defer 30)
+
+            ;; (use-package php-auto-yasnippets
+            ;; :config
+            ;; (progn
+            ;;   (setq php-auto-yasnippet-php-program
+            ;;   (concat user-emacs-directory  "lisp/Create-PHP-YASnippet.php"))
+            ;;   (define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
+            ;; ))
+
    #+END_SRC
 ** Highlight uncommitted changes
    #+BEGIN_SRC emacs-lisp
@@ -698,11 +706,9 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    Expand region increases the selected region by semantic units. Just keep
    pressing the key until it selects what you want.
    #+BEGIN_SRC emacs-lisp
-     (use-package expand-region
-       :ensure t
-       :init
-       :bind (("M-é" . er/expand-region)
-              ("C-M-é" . er/contract-region)))
+     (require 'expand-region)
+     (global-set-key (kbd "M-é") 'er/expand-region)
+     (global-set-key (kbd "C-M-é") 'er/contract-region)
    #+END_SRC
 
 ** Flycheck
@@ -820,15 +826,6 @@ lexical
               ;(define-key php-mode-map (kbd "C-t") 'ac-php-location-stack-back)
               )
             )
-
-            (use-package php-auto-yasnippets
-            :config
-            (progn
-              (setq php-auto-yasnippet-php-program
-              (concat user-emacs-directory  "lisp/Create-PHP-YASnippet.php"))
-              (define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
-            ))
-
      #+END_SRC
 
 
