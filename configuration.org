@@ -699,16 +699,16 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    #+END_SRC
 
    Tell org-mode to use that function
-   #+BEGIN_SRC noemacs-lisp
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (make-variable-buffer-local 'yas/trigger-key)
-              (setq yas/trigger-key [tab])
-              (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-              (define-key yas/keymap [tab] 'yas/next-field)))
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-holok
+               (lambda ()
+                 (make-variable-buffer-local 'yas/trigger-key)
+                 (setq yas/trigger-key [tab])
+                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                 (define-key yas/keymap [tab] 'yas/next-field)))
    #+END_SRC
 
-   #+BEGIN_SRC noemacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package yasnippet :ensure t :defer 30
        :bind (("C-o" . yas-insert-snippet))
        :diminish (yas-minor-mode . "γ")
@@ -740,7 +740,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
      (use-package expand-region
        :ensure t
        :init
-       :bind ("C-=" . er/expand-region))
+       :bind (("M-é" . er/expand-region)
+              ("C-M-é" . er/contract-region)))
    #+END_SRC
 
 ** Flycheck
@@ -774,7 +775,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
      :init
      (powerline-default-theme))
    #+END_SRC
-
+lexical
 ** Yaml
    #+BEGIN_SRC emacs-lisp
 
@@ -800,7 +801,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 **** php-mode + hooks
 
      #+BEGIN_SRC emacs-lisp
-          (use-package php-eldoc :ensure t)
+          ;(use-package php-eldoc :ensure t)
 
           (use-package highlight-symbol :ensure t)
 
@@ -820,11 +821,11 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
                       ;company-ac-php-backend
                       ))))
 
-            (when (fboundp 'php-extras-eldoc-documentation-function)
-              (add-function :before-until (local 'eldoc-documentation-function)
-                            'php-extras-eldoc-documentation-function))
+            ;(when (fboundp 'php-extras-eldoc-documentation-function)
+            ;  (add-function :before-until (local 'eldoc-documentation-function)
+            ;                'php-extras-eldoc-documentation-function))
 
-            (eldoc-mode t)
+            ;(eldoc-mode t)
             (highlight-symbol-mode)
             (auto-fill-mode 0)
             (add-to-list 'write-file-functions 'delete-trailing-whitespace)
@@ -894,32 +895,32 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
   #+END_SRC
 ** Web-mode
    #+BEGIN_SRC emacs-lisp
-     (use-package web-mode
-       :ensure t
-       :init
-       (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
-       (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-       (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
-       (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+        (use-package web-mode
+          :ensure t
+          :bind ("M-é" . web-mode-mark-and-expand)
+          :init
+          (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
+          (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
+          (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
+          (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 
-       (setq web-mode-enable-css-colorization t)
-       (setq web-mode-enable-current-element-highlight t)
-       (setq web-mode-ac-sources-alist
-         '(("css" . (ac-source-css-property))
-           ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
-       (setq web-mode-code-indent-offset 2)
-       (setq web-mode-css-indent-offset 2)
-       (setq web-mode-markup-indent-offset 2)
-       ;; padding
-       ;; For <style> parts
-       (setq web-mode-style-padding 1)
-       ;; For <script> parts
-       (setq web-mode-script-padding 1)
-       ;; For multi-line blocks
-       (setq web-mode-block-padding 0)
-       (setq web-mode-enable-auto-pairing nil)
-
-     )
+          (setq web-mode-enable-css-colorization t)
+          (setq web-mode-enable-current-element-highlight t)
+          (setq web-mode-ac-sources-alist
+                '(("css" . (ac-source-css-property))
+                  ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+          (setq web-mode-code-indent-offset 2)
+          (setq web-mode-css-indent-offset 2)
+          (setq web-mode-markup-indent-offset 2)
+          ;; padding
+          ;; For <style> parts
+          (setq web-mode-style-padding 1)
+          ;; For <script> parts
+          (setq web-mode-script-padding 1)
+          ;; For multi-line blocks
+          (setq web-mode-block-padding 0)
+          (setq web-mode-enable-auto-pairing nil)
+          )
 
    #+END_SRC
 ** Javascript
@@ -959,7 +960,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
       (tide-setup)
       (flycheck-mode +1)
       (setq flycheck-check-syntax-automatically '(save mode-enabled))
-      (eldoc-mode +1)
+      ;(eldoc-mode +1)
       (tide-hl-identifier-mode +1)
       ;; company is an optional dependency. You have to
       ;; install it separately via package-install
@@ -996,6 +997,47 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
      )
 
    #+END_SRC
+* git
+** magit
+   magit rocks !
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit-gitflow
+       :ensure t
+     )
+
+     (use-package magit
+       :ensure t
+       :init
+       (setq magit-display-buffer-function
+           #'magit-display-buffer-fullframe-status-v1)
+       (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+       :config
+       (setq magit-completing-read-function 'ivy-completing-read)
+     )
+   #+END_SRC
+
+** git-timemachine
+#+BEGIN_SRC emacs-lisp
+  (use-package git-timemachine
+    :ensure t
+    :commands (git-timemachine-toggle
+               git-timemachine-switch-branch)
+    :bind* (("M-m g l" . git-timemachine-toggle)
+            ("M-m g L" . git-timemachine-switch-branch)))
+#+END_SRC
+
+** ediff
+
+  Ediff mode is a UNIX patching tool and my version controlling
+  package uses this to help resolve merge conflicts and having some
+  better defaults will be useful for this.
+
+https://www.gnu.org/software/emacs/manual/html_node/ediff/
+
+#+BEGIN_SRC emacs-lisp
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain
+        ediff-split-window-function 'split-window-horizontally)
+#+END_SRC
 * Sysadmin
 ** tramp mode
    #+BEGIN_SRC emacs-lisp
@@ -1099,7 +1141,12 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
      (global-set-key (kbd "C-c C-r") 'ivy-resume)
 
      (setq ivy-re-builders-alist
-      '((t . ivy--regex-fuzzy)))
+      '((swiper            . ivy--regex-plus)
+        (ivy-switch-buffer . ivy--regex-fuzzy)
+        (t                 . ivy--regex-fuzzy)))
+
+     ;; (setq ivy-re-builders-alist
+     ;;  '((t . ivy--regex-fuzzy)))
 
      ;(setq ivy-re-builders-alist
      ;      '((read-file-name-internal . ivy--regex-fuzzy)
