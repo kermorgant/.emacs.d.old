@@ -1,3 +1,4 @@
+
 * defaults
 ** custom file
    Emacs has a built-in customization interface that helps beginners customize a
@@ -65,6 +66,47 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
    #+BEGIN_SRC emacs-lisp
      (savehist-mode)
    #+END_SRC
+* git
+** magit
+   magit rocks !
+   #+BEGIN_SRC emacs-lisp
+     (use-package magit-gitflow
+       :ensure t
+     )
+
+     (use-package magit
+       :ensure t
+       :init
+       (setq magit-display-buffer-function
+           #'magit-display-buffer-fullframe-status-v1)
+       (add-hook 'magit-mode-hook 'turn-on-magit-gitflow)
+       :config
+       (setq magit-completing-read-function 'ivy-completing-read)
+     )
+   #+END_SRC
+
+** git-timemachine
+#+BEGIN_SRC emacs-lisp
+  (use-package git-timemachine
+    :ensure t
+    :commands (git-timemachine-toggle
+               git-timemachine-switch-branch)
+    :bind* (("M-m g l" . git-timemachine-toggle)
+            ("M-m g L" . git-timemachine-switch-branch)))
+#+END_SRC
+
+** ediff
+
+  Ediff mode is a UNIX patching tool and my version controlling
+  package uses this to help resolve merge conflicts and having some
+  better defaults will be useful for this.
+
+https://www.gnu.org/software/emacs/manual/html_node/ediff/
+
+#+BEGIN_SRC emacs-lisp
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain
+        ediff-split-window-function 'split-window-horizontally)
+#+END_SRC
 * Org-mode
 ** ensure presence
 
@@ -648,8 +690,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
          "M-m m" "move prefix"))
    #+END_SRC
 
-#+RESULTS:
-
 ** yasnippets
 
    The latest version of yasnippet doesn't play well with Org mode.
@@ -659,14 +699,15 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    #+END_SRC
 
    Tell org-mode to use that function
-   #+BEGIN_SRC noemacs-lisp
-  (add-hook 'org-mode-holok
-            (lambda ()
-              (make-variable-buffer-local 'yas/trigger-key)
-              (setq yas/trigger-key [tab])
-              (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
-              (define-key yas/keymap [tab] 'yas/next-field)))
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'org-mode-holok
+               (lambda ()
+                 (make-variable-buffer-local 'yas/trigger-key)
+                 (setq yas/trigger-key [tab])
+                 (add-to-list 'org-tab-first-hook 'yas/org-very-safe-expand)
+                 (define-key yas/keymap [tab] 'yas/next-field)))
    #+END_SRC
+
 
    #+BEGIN_SRC emacs-lisp
      (use-package yasnippet :ensure t :defer 30
@@ -745,12 +786,20 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 lexical
 ** Yaml
    #+BEGIN_SRC emacs-lisp
-     (use-package yaml-mode :ensure t
+
+     (use-package highlight-indentation :ensure t )
+     (use-package smart-shift :ensure t )
+
+     (use-package yaml-mode
+       :ensure t
+       :config
+       (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+       (add-hook 'yaml-mode-hook 'smart-shift-mode)
        :init
        (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode))
        (setq yaml-indent-offset 4)
-       (add-hook 'php-mode-hook (auto-fill-mode 0))
-     )
+                                             ;(add-hook '(point)hp-mode-hook (auto-fill-mode 0))
+       )
    #+END_SRC
 ** PHP
     TODO = Read this : https://www.philnewton.net/guides/emacs-as-a-php-editor/
@@ -806,8 +855,8 @@ lexical
             :ensure t
             :init
             (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-            (add-hook 'php-mode-hook 'my-php-mode-hook)
-            (add-hook 'php-mode-hook 'configure-php-mode)
+            ;(add-hook 'php-mode-hook 'my-php-mode-hook)
+            ;(add-hook 'php-mode-hook 'configure-php-mode)
           )
 
           (use-package company-php
@@ -833,7 +882,7 @@ lexical
 
   https://www.mediawiki.org/wiki/MediaWiki-Vagrant/Advanced_usage#Emacs_with_geben
 
-  #+BEGIN_SRC emacs_lisp
+  #+BEGIN_SRC noemacs_lisp
   (autoload 'geben "geben" "PHP Debugger on Emacs" t)
   ; firebug shorcuts
   (eval-after-load 'geben
@@ -895,12 +944,13 @@ lexical
              )
    #+END_SRC
 
-configure auto-complete with tern
-#+BEGIN_SRC emacs-lisp
-  (use-package tern :ensure t :defer t
-    :init (add-hook 'javascript-hook 'tern-mode)
-    (add-to-list 'company-backends 'company-tern))
-#+END_SRC
+   configure auto-complete with tern
+   #+BEGIN_SRC emacs-lisp
+     (use-package tern
+       :ensure t :defer t
+       :init (add-hook 'javascript-hook 'tern-mode)
+       (add-to-list 'company-backends 'company-tern))
+   #+END_SRC
 
 ** typescript
   #+BEGIN_SRC emacs-lisp
@@ -916,7 +966,8 @@ configure auto-complete with tern
       ;; `M-x package-install [ret] company`
       (company-mode +1))
 
-    (use-package tide :ensure t
+    (use-package tide
+      :ensure t
       :init
       (add-hook 'before-save-hook 'tide-format-before-save)
       (add-hook 'typescript-mode-hook #'setup-tide-mode)
