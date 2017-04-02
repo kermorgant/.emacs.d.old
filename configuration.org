@@ -746,10 +746,23 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 ** expand-region
    Expand region increases the selected region by semantic units. Just keep
    pressing the key until it selects what you want.
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC noemacs-lisp
      (require 'expand-region)
-     (global-set-key (kbd "M-é") 'er/expand-region)
-     (global-set-key (kbd "C-M-é") 'er/contract-region)
+     ;(global-set-key [?\M-é] 'er/expand-region)
+     ;(global-set-key [134217961] 'er/expand-region)
+     ;(global-set-key [134217961] 'er/expand-region)
+     ;(global-set-key (kbd "C-M-[351]") 'er/contract-region)
+   #+END_SRC
+
+   (kbd "C-M-é") -> eval that with C-j in scratch buffer
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package expand-region
+       :ensure t
+       :bind* (([?\M-é] . er/expand-region)
+               ([201326825] . er/contract-region))
+       )
+
    #+END_SRC
 
 ** Flycheck
@@ -760,6 +773,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :ensure t
        :init
        (global-flycheck-mode)
+       (setq flycheck-php-executable "/usr/bin/php")
      )
 
      (use-package flycheck-color-mode-line
@@ -935,8 +949,8 @@ lexical
                              js2-auto-indent-p t
                              js2-global-externs '("angular")
                              js2-indent-on-enter-key t
-                             flycheck-disabled-checkers '(javascript-jshint)
-                             flycheck-checkers '(javascript-eslint)
+;                             flycheck-disabled-checkers '(javascript-jshint)
+;                             flycheck-checkers '(javascript-eslint)
                              flycheck-eslintrc "~/.eslintrc"))
                (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
                ;(add-to-list 'js2-mode-hook 'flycheck-mode)
@@ -1180,7 +1194,8 @@ While we're here, let's also increase recentf's items
              `((avy-goto-char-timer . (?j ?k ?l ?f ?s ?d ?e ?r ?u ?i))
                (avy-goto-line . (?j ?k ?l ?f ?s ?d ?e ?r ?u ?i))))
        (setq avy-style 'pre)
-       :bind* (("M-z" . avy-goto-char-timer)
+       :bind* (("M-z" . ace-jump-mode)
+                                             ;("M-z" . avy-goto-char-timer)
                ("M-m z" . avy-goto-line)))
    #+END_SRC
 ** smex
