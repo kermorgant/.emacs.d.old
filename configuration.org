@@ -652,12 +652,12 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
      (use-package smartparens
        :ensure t
        :demand t
-       :bind* (("M-m m j" . sp-down-sexp)
+       :bind* (("C-M-d" . sp-down-sexp)
                ("M-m m k" . sp-backward-up-sexp)
-               ("M-m m h" . sp-backward-down-sexp)
-               ("M-m m l" . sp-up-sexp)
-               ("M-m m f" . sp-forward-sexp)
-               ("M-m m b" . sp-backward-sexp)
+               ("C-M-a" . sp-backward-down-sexp)
+               ("C-M-e" . sp-up-sexp)
+               ("C-M-f" . sp-forward-sexp)
+               ("C-M-b" . sp-backward-sexp)
                ("M-m m a" . sp-beginning-of-sexp)
                ("M-m m e" . sp-end-of-sexp)
                ("M-m m n" . sp-next-sexp)
@@ -681,14 +681,29 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :diminish smartparens-mode
        :diminish smartparens-strict-mode
        :config
-       (require 'smartparens-config)
+       ;(use-package smartparens-config :ensure t)
        (smartparens-global-mode)
        (sp-local-pair 'web-mode "{%" "%}" :wrap "C-%")
-       (sp-local-pair 'web-mode "<" ">" :wrap "C->")
-       ;(smartparens-global-strict-mode)
+         (sp-local-pair 'web-mode "<" ">" :wrap "C->")
+                                             ;(smartparens-global-strict-mode)
        (show-smartparens-global-mode)
-       (which-key-add-key-based-replacements
-         "M-m m" "move prefix"))
+       (which-key-add-key-based-replacements "M-m m" "move prefix")
+
+        (bind-key "C-M-s"
+                  (defhydra smartparens-hydra ()
+                    Smartparens
+                    ("d" sp-down-sexp "Down")
+                    ("e" sp-up-sexp "Up")
+                    ("u" sp-backward-up-sexp "Up")
+                    ("a" sp-backward-down-sexp "Down")
+                    ("f" sp-forward-sexp "Forward")
+                    ("b" sp-backward-sexp "Backward")
+                    ("k" sp-kill-sexp "Kill" :color blue)
+                    ("q" nil "Quit" :color blue))
+                  smartparens-mode-map)
+        )
+
+
    #+END_SRC
 
 ** yasnippets
