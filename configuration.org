@@ -660,12 +660,12 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
      (use-package smartparens
        :ensure t
        :demand t
-       :bind* (("M-m m j" . sp-down-sexp)
+       :bind* (("C-M-d" . sp-down-sexp)
                ("M-m m k" . sp-backward-up-sexp)
-               ("M-m m h" . sp-backward-down-sexp)
-               ("M-m m l" . sp-up-sexp)
-               ("M-m m f" . sp-forward-sexp)
-               ("M-m m b" . sp-backward-sexp)
+               ("C-M-a" . sp-backward-down-sexp)
+               ("C-M-e" . sp-up-sexp)
+               ("C-M-f" . sp-forward-sexp)
+               ("C-M-b" . sp-backward-sexp)
                ("M-m m a" . sp-beginning-of-sexp)
                ("M-m m e" . sp-end-of-sexp)
                ("M-m m n" . sp-next-sexp)
@@ -689,14 +689,29 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :diminish smartparens-mode
        :diminish smartparens-strict-mode
        :config
-       (require 'smartparens-config)
+       ;(use-package smartparens-config :ensure t)
        (smartparens-global-mode)
        (sp-local-pair 'web-mode "{%" "%}" :wrap "C-%")
-       (sp-local-pair 'web-mode "<" ">" :wrap "C->")
-       ;(smartparens-global-strict-mode)
+         (sp-local-pair 'web-mode "<" ">" :wrap "C->")
+                                             ;(smartparens-global-strict-mode)
        (show-smartparens-global-mode)
-       (which-key-add-key-based-replacements
-         "M-m m" "move prefix"))
+       (which-key-add-key-based-replacements "M-m m" "move prefix")
+
+        (bind-key "C-M-s"
+                  (defhydra smartparens-hydra ()
+                    Smartparens
+                    ("d" sp-down-sexp "Down")
+                    ("e" sp-up-sexp "Up")
+                    ("u" sp-backward-up-sexp "Up")
+                    ("a" sp-backward-down-sexp "Down")
+                    ("f" sp-forward-sexp "Forward")
+                    ("b" sp-backward-sexp "Backward")
+                    ("k" sp-kill-sexp "Kill" :color blue)
+                    ("q" nil "Quit" :color blue))
+                  smartparens-mode-map)
+        )
+
+
    #+END_SRC
 
 ** yasnippets
@@ -840,7 +855,9 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
          (add-to-list 'write-file-functions 'delete-trailing-whitespace)
          (ggtags-mode t)
         ; (flycheck-mode)
-         ;(yas-minor-mode t)
+         (yas-minor-mode t)
+         (origami-mode)
+
          )
 
        (defun my-php-mode-hook ()
@@ -857,8 +874,8 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
          :ensure t
          :init
          (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-         ;(add-hook 'php-mode-hook 'my-php-mode-hook)
-         ;(add-hook 'php-mode-hook 'configure-php-mode)
+         (add-hook 'php-mode-hook 'my-php-mode-hook)
+         (add-hook 'php-mode-hook 'configure-php-mode)
        )
 
        (use-package company-php
@@ -1117,7 +1134,8 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
    #+BEGIN_SRC emacs-lisp
      (global-font-lock-mode 1)
      ;(set-frame-font "Inconsolata")
-     (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-15-*-*-*-m-0-iso10646-1")
+     (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-15a-*-*-*-m-0-iso10646-1")
+     ;(set-frame-font "-misc-inconsolata-medium-r-normal-*-15-*-*-*-m-0-iso10646-1")
      (tool-bar-mode 0)
      (setq-default fill-column 80)
      (when window-system (scroll-bar-mode -1))
@@ -1220,14 +1238,31 @@ While we're here, let's also increase recentf's items
 #+END_SRC
 ** hydra
    #+BEGIN_SRC emacs-lisp
-     (use-package hydra :ensure t)
-                                             ; an example
-     (defhydra hydra-zoom (global-map "<f2>")
-       "zoom"
-       ("g" text-scale-increase "in")
-       ("l" text-scale-decrease "out"))
+       (use-package hydra :ensure t)
+                                               ; an example
+       (defhydra hydra-zoom (global-map "<f2>")
+         "zoom"
+         ("g" text-scale-increase "in")
+         ("l" text-scale-decrease "out"))
 
+
+       (global-set-key
+        (kbd "C-S-f")
+        (defhydra hydra-folding (:color red)
+          "
+         _o_pen node    _n_ext fold       toggle _f_orward
+         _c_lose node   _p_revious fold   toggle _r_ecursively
+         "
+          ("o" origami-open-node)
+          ("c" origami-close-node)
+          ("n" origami-next-fold)
+          ("p" origami-previous-fold)
+          ("f" origami-forward-toggle-node)
+          ("r" origami-recursively-toggle-node)
+          ))
    #+END_SRC
+
+
 ** Terminal
    #+BEGIN_SRC emacs-lisp
         (require 'multi-term)
@@ -1401,9 +1436,16 @@ While we're here, let's also increase recentf's items
       (projectile-global-mode)
       )
 
-      (use-package counsel-projectile :ensure t
-        :bind (("C-x ," . ace-jump-projectile-buffers)
-               ("C-x C-," . counsel-projectile-find-file))
+    (use-package ace-jump-buffer
+      :ensure t)
+
+    (use-package counsel-projectile
+      :ensure t
+      :bind (("C-x C-," . counsel-projectile-switch-to-buffer)
+               ("C-x C-;" . counsel-projectile-find-file))
+      :init
+      (counsel-projectile-on)
+
       )
            ;(setq projectile-enable-caching t)
   #+END_SRC
