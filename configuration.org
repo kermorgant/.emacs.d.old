@@ -27,8 +27,8 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
 ** local paths
 #+BEGIN_SRC emacs-lisp
 (defvar user-emacs-cache-directory
-  (concat (getenv "HOME") "/.cache/emacs"))
-
+(concat (getenv "HOME") "/.cache/emacs"))
+(add-to-list 'exec-path (concat (getenv "HOME") "/.config/composer/vendor/bin"))
 #+END_SRC
 ** Set personal information
 
@@ -121,6 +121,7 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
 
     :config
     (require 'org-id)
+    (require 'ox-md)
 
     ;(define-key global-map "\C-cl" 'org-store-link)
     ;(define-key global-map "\C-ca" 'org-agenda)
@@ -433,7 +434,14 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
 
 ** presentation
    #+BEGIN_SRC emacs-lisp
-     (setq org-reveal-root "file:///~/.emacs.d/reveal.js")
+     (use-package ox-reveal
+       :ensure ;TODO:
+       :defer t
+       :init
+       (setq org-reveal-root "file:///~/.emacs.d/reveal.js")
+       :commands (org-reveal-export-to-html org-reveal-export-to-html-and-browse)
+       )
+
    #+END_SRC
 
 * Pdf files
@@ -661,6 +669,15 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    #+BEGIN_SRC emacs-lisp
      (use-package ag :ensure t)
    #+END_SRC
+** dumb-jump
+
+   #+BEGIN_SRC emacs-lisp
+     (use-package dumb-jump
+       :ensure t
+       :init
+       (dumb-jump-mode)
+       )
+   #+END_SRC
 ** code folding
    #+BEGIN_SRC emacs-lisp
      (use-package origami :ensure t
@@ -851,7 +868,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
             ;;   (define-key php-mode-map (kbd "C-c C-y") 'yas/create-php-snippet)
             ;; ))
 
-
 ** Highlight uncommitted changes
    #+BEGIN_SRC emacs-lisp
      (use-package diff-hl :ensure t
@@ -1007,7 +1023,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :init
        (add-to-list 'auto-mode-alist '("\\.md\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.html\\'" . web-mode))
-       (add-to-list 'auto-mode-alist '("\\.html.twig\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.twig\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
 
        (setq web-mode-enable-css-colorization t)
@@ -1546,8 +1562,8 @@ While we're here, let's also increase recentf's items
       :ensure t
       :bind (("C-x C-," . projectile-switch-to-buffer)
                ("C-x C-;" . counsel-projectile-find-file))
-      :init
-      (counsel-projectile-on)
+      ;; :init
+      ;; (counsel-projectile-on)
 
       )
            ;(setq projectile-enable-caching t)
