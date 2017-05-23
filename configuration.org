@@ -930,75 +930,117 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
     https://github.com/aaronbieber/dotfiles/blob/master/configs/emacs.d/lisp/init-php.el
 
 **** php-mode + hooks
+     #+BEGIN_SRC emacs-lisp
+              ;(use-package php-eldoc :ensure t)
+
+              (use-package ede-php-autoload :ensure t)
+
+              (use-package highlight-symbol :ensure t)
+
+              (defun configure-php-mode ()
+                "Set up all of my PHP mode preferences."
+                (require 'newcomment)
+                (setq auto-fill-function 'do-auto-fill)
+                (setq flycheck-disabled-checkers '(php-phpmd))
+
+                (when (boundp 'company-backends)
+                  (setq-local company-backends
+                       '((company-dabbrev-code
+       ;                   php-extras-company
+                          company-gtags
+                          company-etags
+                          company-keywords
+                          ;company-ac-php-backend
+                          ))))
+
+                ;(when (fboundp 'php-extras-eldoc-documentation-function)
+                ;  (add-function :before-until (local 'eldoc-documentation-function)
+                ;                'php-extras-eldoc-documentation-function))
+
+                ;(eldoc-mode t)
+                (highlight-symbol-mode)
+                (auto-fill-mode 0)
+                (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+                ;(require 'ede)
+                ;(global-ede-mode t)
+                (ggtags-mode t)
+                (ggtags-navigation-mode-cleanup but 1)
+                (yas-minor-mode t)
+                (origami-mode)
+
+                )
+
+              (defun my-php-mode-hook ()
+                (setq indent-tabs-mode nil)
+                (setq c-basic-offset 4)
+                (setq php-template-compatibility nil)
+                (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
+                (subword-mode 1)
+                (smartparens-mode t)
+                (php-enable-symfony2-coding-style)
+              )
+
+              (use-package php-mode
+                :ensure t
+                :init
+                (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
+                (add-hook 'php-mode-hook 'my-php-mode-hook)
+                (add-hook 'php-mode-hook 'configure-php-mode)
+                (add-hook 'php-mode-hook 'ede-php-autoload-mode)
+                (with-eval-after-load 'php-mode
+                  (require 'php-current)
+                  (define-key php-mode-map (kbd "C-c C--") 'php-current-class)
+                  (define-key php-mode-map (kbd "C-c C-=") 'php-current-namespace))
+                )
+
+              (use-package company-php
+                :ensure t
+                :config
+                (progn
+                  (add-hook 'php-mode-hook
+                            '(lambda ()
+                               (unless (executable-find "ctags")
+                                 (error "Program: ctags is missing"))
+                               (company-mode t)))
+                  )
+                )
+     #+END_SRC
+
+     config stolen here : https://github.com/ejmr/php-mode/issues/256
 
      #+BEGIN_SRC emacs-lisp
-       ;(use-package php-eldoc :ensure t)
 
-       (use-package highlight-symbol :ensure t)
+       (defun ofc/php-tags-find-at-point ()
+         "When called on a FQN, it resolves its name and jumps to the file where it's defined.
+       When called on anything else it forwards the call to a tag search function."
+         (interactive)
+         ;; Handle the switcheroo for PHP using the keybinding (i.e. bind
+         ;; this to ofc/visit-class-file-at-point in php-mode-map.
+         (unless (ofc/visit-class-file-at-point)
+           (ofc/tags-find-at-point)))
 
-       (defun configure-php-mode ()
-         "Set up all of my PHP mode preferences."
-         (require 'newcomment)
-         (setq auto-fill-function 'do-auto-fill)
-         (setq flycheck-disabled-checkers '(php-phpmd))
+       (defun ofc/tags-find-at-point ()
+         "Finds the definitions of the symbol at poing using a tag file."
+         (interactive)
+         (if (featurep 'xref-find-definitions)
+             (xref-find-definitions (thing-at-point 'sexp)))
+         (error "Emacs 25 is required to use xref-find-definitions."))
 
-         (when (boundp 'company-backends)
-           (setq-local company-backends
-                '((company-dabbrev-code
-                   php-extras-company
-                   company-gtags
-                   company-etags
-                   company-keywords
-                   ;company-ac-php-backend
-                   ))))
+       (defun ofc/visit-class-file-at-point ()
+         "Maps a FQN into a file name using PHP autoload resolution."
+         (interactive)
+         ;; NOTE only useful in PHP.
+         (let* ((class-name (replace-regexp-in-string "^\\\\" "" (thing-at-point 'sexp)))
+                (class-file (ede-php-autoload-find-class-def-file (ede-current-project) class-name)))
+           (message "looking up: %s" class-name)
+           (when class-file
+             (when (featurep 'xref-push-marker-stack)
+               (xref-push-marker-stack))
+             (find-file class-file))))
 
-         ;(when (fboundp 'php-extras-eldoc-documentation-function)
-         ;  (add-function :before-until (local 'eldoc-documentation-function)
-         ;                'php-extras-eldoc-documentation-function))
+                                               ;       (global-ede-mode 1)
+       (define-key php-mode-map (kbd "M-.") 'ofc/php-tags-find-at-point)
 
-         ;(eldoc-mode t)
-         (highlight-symbol-mode)
-         (auto-fill-mode 0)
-         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-         (ggtags-mode t)
-         (yas-minor-mode t)
-         (origami-mode)
-
-         )
-
-       (defun my-php-mode-hook ()
-         (setq indent-tabs-mode nil)
-         (setq c-basic-offset 4)
-         (setq php-template-compatibility nil)
-         (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
-         (subword-mode 1)
-         (smartparens-mode t)
-         (php-enable-symfony2-coding-style)
-       )
-
-       (use-package php-mode
-         :ensure t
-         :init
-         (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-         (add-hook 'php-mode-hook 'my-php-mode-hook)
-         (add-hook 'php-mode-hook 'configure-php-mode)
-         (with-eval-after-load 'php-mode
-           (require 'php-current)
-           (define-key php-mode-map (kbd "C-c C--") 'php-current-class)
-           (define-key php-mode-map (kbd "C-c C-=") 'php-current-namespace))
-         )
-
-       (use-package company-php
-         :ensure t
-         :config
-         (progn
-           (add-hook 'php-mode-hook
-                     '(lambda ()
-                        (unless (executable-find "ctags")
-                          (error "Program: ctags is missing"))
-                        (company-mode t)))
-           )
-         )
      #+END_SRC
 
 **** Debugging
