@@ -1029,140 +1029,105 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 ** smartparens
    #+BEGIN_SRC emacs-lisp
      (use-package smartparens
-            :ensure t
-            :demand t
-            :bind* (("C-M-d" . sp-down-sexp)
-                    ("M-m m k" . sp-backward-up-sexp)
-                    ("C-M-a" . sp-backward-down-sexp)
-                    ("C-M-e" . sp-up-sexp)
-                    ("C-M-f" . sp-forward-sexp)
-                    ("C-M-b" . sp-backward-sexp)
-                    ("M-m m a" . sp-beginning-of-sexp)
-                    ("M-m m e" . sp-end-of-sexp)
-                    ("M-m m n" . sp-next-sexp)
-                    ("M-m m p" . sp-previous-sexp)
-                    ("M-m m >" . sp-forward-barf-sexp)
-                    ("M-m m <" . sp-backward-barf-sexp)
-                    ("M-m m )" . sp-forward-slurp-sexp)
-                    ("M-m m (" . sp-backward-slurp-sexp)
-                    ("M-m m x" . sp-transpose-sexp)
-                    ("M-m m d" . sp-kill-sexp)
-                    ("M-m m y" . sp-copy-sexp)
-                    ("M-m m u" . sp-unwrap-sexp)
-                    ("M-m m U" . sp-backward-unwrap-sexp)
-                    ("M-m m C" . sp-convolute-sexp)
-                    ("M-m m r" . sp-raise-sexp)
-                    ("M-m m s" . sp-split-sexp)
-                    ("M-m m S" . sp-splice-sexp)
-                    ("M-m m F" . sp-splice-sexp-killing-forward)
-                    ("M-m m B" . sp-splice-sexp-killing-backward)
-                    ("M-m m A" . sp-splice-sexp-killing-around))
-            :diminish smartparens-mode
-            :diminish smartparens-strict-mode
-            :config
-            ;(use-package smartparens-config :ensure t)
-            (smartparens-global-mode)
-            (sp-local-pair 'web-mode "{%" "%}" :wrap "C-%")
-              (sp-local-pair 'web-mode "<" ">" :wrap "C->")
-                                                  ;(smartparens-global-strict-mode)
-            (show-smartparens-global-mode)
-            (which-key-add-key-based-replacements "M-m m" "move prefix")
-
-             (bind-key "C-M-s"
-     (defhydra hydra-learn-sp (:hint nil)
-       "
-       _B_ backward-sexp            -----
-       _F_ forward-sexp               _s_ splice-sexp
-       _L_ backward-down-sexp         _df_ splice-sexp-killing-forward
-       _H_ backward-up-sexp           _db_ splice-sexp-killing-backward
-     ^^------                         _da_ splice-sexp-killing-around
-       _k_ down-sexp                -----
-       _j_ up-sexp                    _C-s_ select-next-thing-exchange
-     -^^-----                         _C-p_ select-previous-thing
-       _n_ next-sexp                  _C-n_ select-next-thing
-       _p_ previous-sexp            -----
-       _a_ beginning-of-sexp          _C-f_ forward-symbol
-       _z_ end-of-sexp                _C-b_ backward-symbol
-     --^^-                          -----
-       _t_ transpose-sexp             _c_ convolute-sexp
-     -^^--                            _g_ absorb-sexp
-       _x_ delete-char                _q_ emit-sexp
-       _dw_ kill-word               -----
-       _dd_ kill-sexp                 _,b_ extract-before-sexp
-     -^^--                            _,a_ extract-after-sexp
-       _S_ unwrap-sexp              -----
-     -^^--                            _AP_ add-to-previous-sexp
-       _C-h_ forward-slurp-sexp       _AN_ add-to-next-sexp
-       _C-l_ forward-barf-sexp      -----
-       _C-S-h_ backward-slurp-sexp    _ join-sexp
-       _C-S-l_ backward-barf-sexp     _|_ split-sexp
-     "
-       ;; TODO: Use () and [] - + * | <space>
-       ("B" sp-backward-sexp );; similiar to VIM b
-       ("F" sp-forward-sexp );; similar to VIM f
-       ;;
-       ("L" sp-backward-down-sexp )
-       ("H" sp-backward-up-sexp )
-       ;;
-       ("k" sp-down-sexp ) ; root - towards the root
-       ("j" sp-up-sexp )
-       ;;
-       ("n" sp-next-sexp )
-       ("p" sp-previous-sexp )
-       ;; a..z
-       ("a" sp-beginning-of-sexp )
-       ("z" sp-end-of-sexp )
-       ;;
-       ("t" sp-transpose-sexp )
-       ;;
-       ("x" sp-delete-char )
-       ("dw" sp-kill-word )
-       ;;("ds" sp-kill-symbol ) ;; Prefer kill-sexp
-       ("dd" sp-kill-sexp )
-       ;;("yy" sp-copy-sexp ) ;; Don't like it. Pref visual selection
-       ;;
-       ("S" sp-unwrap-sexp ) ;; Strip!
-       ;;("wh" sp-backward-unwrap-sexp ) ;; Too similar to above
-       ;;
-       ("C-h" sp-forward-slurp-sexp )
-       ("C-l" sp-forward-barf-sexp )
-       ("C-S-h" sp-backward-slurp-sexp )
-       ("C-S-l" sp-backward-barf-sexp )
-       ;;
-       ;;("C-[" (bind (sp-wrap-with-pair "[")) ) ;;FIXME
-       ;;("C-(" (bind (sp-wrap-with-pair "(")) )
-       ;;
-       ("s" sp-splice-sexp )
-       ("df" sp-splice-sexp-killing-forward )
-       ("db" sp-splice-sexp-killing-backward )
-       ("da" sp-splice-sexp-killing-around )
-       ;;
-       ("C-s" sp-select-next-thing-exchange )
-       ("C-p" sp-select-previous-thing )
-       ("C-n" sp-select-next-thing )
-       ;;
-       ("C-f" sp-forward-symbol )
-       ("C-b" sp-backward-symbol )
-       ;;
-       ;;("C-t" sp-prefix-tag-object)
-       ;;("H-p" sp-prefix-pair-object)
-       ("c" sp-convolute-sexp )
-       ("g" sp-absorb-sexp )
-       ("q" sp-emit-sexp )
-       ;;
-       (",b" sp-extract-before-sexp )
-       (",a" sp-extract-after-sexp )
-       ;;
-       ("AP" sp-add-to-previous-sexp );; Difference to slurp?
-       ("AN" sp-add-to-next-sexp )
-       ;;
-       ("_" sp-join-sexp ) ;;Good
-       ("|" sp-split-sexp ))
-             ))
-
-
+       :ensure t
+       :bind* (("M-m m j" . sp-down-sexp)
+               ("M-m m k" . sp-backward-up-sexp)
+               ("M-m m h" . sp-backward-down-sexp)
+               ("M-m m l" . sp-up-sexp)
+               ("M-m m f" . sp-forward-sexp)
+               ("M-m m b" . sp-backward-sexp)
+               ("M-m m a" . sp-beginning-of-sexp)
+               ("M-m m e" . sp-end-of-sexp)
+               ("M-m m n" . sp-next-sexp)
+               ("M-m m p" . sp-previous-sexp)
+               ("M-m m >" . sp-forward-barf-sexp)
+               ("M-m m <" . sp-backward-barf-sexp)
+               ("M-m m )" . sp-forward-slurp-sexp)
+               ("M-m m (" . sp-backward-slurp-sexp)
+               ("M-m m x" . sp-transpose-sexp)
+               ("M-m m d" . sp-kill-sexp)
+               ("M-m m y" . sp-copy-sexp)
+               ("M-m m u" . sp-unwrap-sexp)
+               ("M-m m U" . sp-backward-unwrap-sexp)
+               ("M-m m C" . sp-convolute-sexp)
+               ("M-m m r" . sp-raise-sexp)
+               ("M-m m s" . sp-split-sexp)
+               ("M-m m S" . sp-splice-sexp)
+               ("M-m m F" . sp-splice-sexp-killing-forward)
+               ("M-m m B" . sp-splice-sexp-killing-backward)
+               ("M-m m A" . sp-splice-sexp-killing-around))
+       :diminish smartparens-mode
+       :diminish smartparens-strict-mode
+       :config
+       (require 'smartparens-config)
+       (smartparens-global-mode)
+       (smartparens-global-strict-mode)
+       (show-smartparens-global-mode)
+       (which-key-add-key-based-replacements
+         "M-m m" "move prefix"))
    #+END_SRC
-
+*** Modal bindings
+    #+BEGIN_SRC emacs-lisp
+      (modalka-define-kbd "m j" "M-m m j")
+      (modalka-define-kbd "m k" "M-m m k")
+      (modalka-define-kbd "m h" "M-m m h")
+      (modalka-define-kbd "m l" "M-m m l")
+      (modalka-define-kbd "m f" "M-m m f")
+      (modalka-define-kbd "m b" "M-m m b")
+      (modalka-define-kbd "m a" "M-m m a")
+      (modalka-define-kbd "m e" "M-m m e")
+      (modalka-define-kbd "m n" "M-m m n")
+      (modalka-define-kbd "m p" "M-m m p")
+      (modalka-define-kbd "m >" "M-m m >")
+      (modalka-define-kbd "m <" "M-m m <")
+      (modalka-define-kbd "m )" "M-m m )")
+      (modalka-define-kbd "m (" "M-m m (")
+      (modalka-define-kbd "m x" "M-m m x")
+      (modalka-define-kbd "m d" "M-m m d")
+      (modalka-define-kbd "m y" "M-m m y")
+      (modalka-define-kbd "m u" "M-m m u")
+      (modalka-define-kbd "m U" "M-m m U")
+      (modalka-define-kbd "m U" "M-m m U")
+      (modalka-define-kbd "m U" "M-m m U")
+      (modalka-define-kbd "m C" "M-m m C")
+      (modalka-define-kbd "m r" "M-m m r")
+      (modalka-define-kbd "m s" "M-m m s")
+      (modalka-define-kbd "m S" "M-m m S")
+      (modalka-define-kbd "m F" "M-m m F")
+      (modalka-define-kbd "m B" "M-m m B")
+      (modalka-define-kbd "m A" "M-m m A")
+    #+END_SRC
+*** which-key explanations
+    #+BEGIN_SRC emacs-lisp
+      (which-key-add-key-based-replacements
+        "m" "move prefix"
+        "m j" "move down"
+        "m k" "move backward up"
+        "m h" "move backward down"
+        "m l" "move up"
+        "m f" "move forward"
+        "m b" "move backward"
+        "m a" "move beginning"
+        "m e" "move end"
+        "m n" "move next"
+        "m p" "move previous"
+        "m >" "expression forward barf"
+        "m <" "expression backward barf"
+        "m )" "expression forward slurp"
+        "m (" "expression backward slurp"
+        "m x" "smart transpose"
+        "m d" "smart delete"
+        "m y" "smart copy"
+        "m u" "selection unwrap"
+        "m U" "backward unwrap"
+        "m C" "convolute sexp"
+        "m r" "raise sexp"
+        "m s" "split sexp"
+        "m S" "splice sexp"
+        "m F" "splice forward"
+        "m B" "splice backward"
+        "m A" "splice around")
+    #+END_SRC
 ** yasnippets
 
    The latest version of yasnippet doesn't play well with Org mode.
@@ -1791,9 +1756,8 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
 ** Appearance
    #+BEGIN_SRC emacs-lisp
      (global-font-lock-mode 1)
-     ;(set-frame-font "Inconsolata")
+     (add-to-list 'default-frame-alist '(font . "-PfEd-Inconsolata-normal-normal-normal-*-15a-*-*-*-m-0-iso10646-1"))
      (set-frame-font "-PfEd-Inconsolata-normal-normal-normal-*-15a-*-*-*-m-0-iso10646-1")
-     ;(set-frame-font "-misc-inconsolata-medium-r-normal-*-15-*-*-*-m-0-iso10646-1")
      (tool-bar-mode 0)
      (setq-default fill-column 80)
      (when window-system (scroll-bar-mode -1))
