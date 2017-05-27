@@ -676,6 +676,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :ensure t
        :init
        (dumb-jump-mode)
+       (setq dumb-jump-aggressive nil)
        )
    #+END_SRC
 ** code folding
