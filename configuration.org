@@ -106,37 +106,37 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
    #+END_SRC
 * modalka
 
-#+BEGIN_SRC emacs-lisp
-(use-package modalka
-  :ensure t
-  :demand t
-  :bind* (("C-z" . modalka-mode))
-  :diminish (modalka-mode . "μ")
-  :init
-  (setq modalka-cursor-type 'box)
-  :config
-  (global-set-key (kbd "<escape>") #'modalka-mode)
-;  (modalka-global-mode 1)
-  (add-to-list 'modalka-excluded-modes 'magit-status-mode)
-  (add-to-list 'modalka-excluded-modes 'magit-popup-mode)
-  (add-to-list 'modalka-excluded-modes 'eshell-mode)
-  (add-to-list 'modalka-excluded-modes 'deft-mode)
-  (add-to-list 'modalka-excluded-modes 'term-mode)
-  (add-to-list 'modalka-excluded-modes 'undo-tree-mode)
-  (which-key-add-key-based-replacements
-    "M-m"     "Modalka prefix"
-    "M-m :"   "extended prefix"
-    "M-m m"   "move prefix"
-    "M-m s"   "send code prefix"
-    "M-m SPC" "user prefix"
-    "M-m g"   "global prefix"
-    "M-m o"   "org prefix"
-    "M-m a"   "expand around prefix"
-    "M-m i"   "expand inside prefix"
-    "M-m ["   "prev nav prefix"
-    "M-m ]"   "next nav prefix")
-  )
-#+END_SRC
+  #+BEGIN_SRC emacs-lisp
+    (use-package modalka
+      :ensure t
+      :demand t
+      :bind* (("C-z" . modalka-mode))
+      :diminish (modalka-mode . "μ")
+      :init
+      (setq modalka-cursor-type 'box)
+      :config
+      (global-set-key (kbd "<escape>") #'modalka-mode)
+      (modalka-global-mode 1)
+      (add-to-list 'modalka-excluded-modes 'magit-status-mode)
+      (add-to-list 'modalka-excluded-modes 'magit-popup-mode)
+      (add-to-list 'modalka-excluded-modes 'eshell-mode)
+      (add-to-list 'modalka-excluded-modes 'deft-mode)
+      (add-to-list 'modalka-excluded-modes 'term-mode)
+      (add-to-list 'modalka-excluded-modes 'undo-tree-mode)
+      (which-key-add-key-based-replacements
+        "M-m"     "Modalka prefix"
+        "M-m :"   "extended prefix"
+        "M-m m"   "move prefix"
+        "M-m s"   "send code prefix"
+        "M-m SPC" "user prefix"
+        "M-m g"   "global prefix"
+        "M-m o"   "org prefix"
+        "M-m a"   "expand around prefix"
+        "M-m i"   "expand inside prefix"
+        "M-m ["   "prev nav prefix"
+        "M-m ]"   "next nav prefix")
+      )
+  #+END_SRC
 ** Default modal keybindings
 *** numbers
     #+BEGIN_SRC emacs-lisp
@@ -187,7 +187,7 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
       (modalka-define-kbd "H" "C-x >")
       (modalka-define-kbd "L" "C-x <")
       (modalka-define-kbd "Z" "C-x 1")
-      (modalka-define-kbd "q" "C-x (")
+     ; (modalka-define-kbd "q" "C-x (")
       (modalka-define-kbd "Q" "C-x )")
       (modalka-define-kbd "." "M-m .")
       (modalka-define-kbd "?" "M-m ?")
@@ -236,13 +236,13 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
 
 *** Forward navigation prefixed keys
     #+BEGIN_SRC emacs-lisp
-    (modalka-define-kbd "] ]" "C-x n n")
-    (modalka-define-kbd "] s" "M-m ] s")
+      (modalka-define-kbd "] ]" "C-x n n")
+      (modalka-define-kbd "] s" "M-m ] s")
     #+END_SRC
 *** Backward navigation prefixed keys
     #+BEGIN_SRC emacs-lisp
     (modalka-define-kbd "[ [" "C-x n w")
-#+END_SRC
+    #+END_SRC
 
 *** Extended prefix to quit/restart and time
     #+BEGIN_SRC emacs-lisp
@@ -260,7 +260,7 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
       (modalka-define-kbd "SPC g" "M-g g")
       (modalka-define-kbd "SPC d" "C-x d")
       (modalka-define-kbd "SPC q" "C-x 0")
-      ;(modalka-define-kbd "SPC f" "C-x C-f")
+      (modalka-define-kbd "SPC f" "C-x C-f")
       (modalka-define-kbd "SPC w" "C-x C-s")
       (modalka-define-kbd "SPC c" "M-m SPC c")
       (modalka-define-kbd "SPC R" "M-m SPC R")
@@ -323,7 +323,7 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
         "K"   "scroll up"
         "L"   "scroll right"
         "'"   "org edit separately"
-        "q"   "start macro"
+;        "q"   "start macro"
         "Q"   "end macro"
         "?"   "top level bindings"
         "v"   "start selection"
@@ -880,9 +880,26 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
    #+BEGIN_SRC emacs-lisp
      (use-package undo-tree
        :ensure t
+       :diminish undo-tree-mode
+       :bind* (("M-m u" . undo-tree-undo)
+               ("M-m r" . undo-tree-redo)
+               ("M-m U" . undo-tree-visualize))
        :config
        (global-undo-tree-mode 1))
    #+END_SRC
+
+*** modal bindings + which-key explanations
+
+    #+BEGIN_SRC emacs-lisp
+      (modalka-define-kbd "u" "M-m u")
+      (modalka-define-kbd "U" "M-m U")
+      (modalka-define-kbd "r" "M-m r")
+
+      (which-key-add-key-based-replacements
+        "u" "undo"
+        "r" "redo"
+        "U" "undo tree")
+    #+END_SRC
 
 ** Custom key-bindings
 
@@ -917,10 +934,44 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
 
    #+END_SRC
 ** new line at the end
-
    Avoid reaching for the return key to add newlines!
    #+BEGIN_SRC emacs-lisp
      (setq next-line-add-newlines t)
+   #+END_SRC
+** Change region/till end of line
+
+   Being almost always in Modalka mode implies I have to toggle it after deleting a region if I want to overwrite it. These functions, similar to the Vi style commands, let me delete and start typing in one swoop.
+
+   #+BEGIN_SRC emacs-lisp
+     (defun sk/change-region ()
+       "delete and put me in Emacs state in one swoop"
+       (interactive)
+       (if (region-active-p)
+           (let ((beg (region-beginning))
+                 (end (region-end)))
+             (kill-region beg end)))
+       (modalka-mode 0))
+
+     (defun sk/change-rest-of-line ()
+       "delete till the end of line and put me in Emacs state in one swoop"
+       (interactive)
+       (kill-line)
+       (modalka-mode 0))
+   #+END_SRC
+
+   Key binding, Modal binding & Which key modal explanation
+
+   #+BEGIN_SRC emacs-lisp
+     (bind-keys*
+      ("M-m c" . sk/change-region)
+      ("M-m C" . sk/change-rest-of-line))
+
+     (modalka-define-kbd "c" "M-m c")
+     (modalka-define-kbd "C" "M-m C")
+
+     (which-key-add-key-based-replacements
+       "c" "change region"
+       "C" "change rest of line")
    #+END_SRC
 
 * built-in browser
@@ -1004,6 +1055,29 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 #+END_SRC
 
 * Coding
+** Code documentation
+   #+BEGIN_SRC emacs-lisp
+     (use-package zeal-at-point
+       :ensure t
+       :bind (("C-c I" . zeal-at-point))
+       :bind* (("M-m SPC i" . zeal-at-point)
+               ("M-m SPC I" . zeal-at-point-search))
+       :init
+       ;(add-to-list 'zeal-at-point-mode-alist '(php-mode . "php"))
+       )
+   #+END_SRC
+
+   Modal documentation and which-key explanations
+   #+BEGIN_SRC emacs-lisp
+     (modalka-define-kbd "SPC i" "M-m SPC i")
+     (modalka-define-kbd "SPC I" "M-m SPC I")
+     (modalka-define-kbd "I"     "C-c I")
+     (which-key-add-key-based-replacements
+       "I"     "info at point"
+       "SPC i" "documentation prompt"
+       "SPC I" "documentation at point")
+   #+END_SRC
+
 ** silver search
    How could I work without it ?
    #+BEGIN_SRC emacs-lisp
@@ -1597,7 +1671,13 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        :init (add-hook 'javascript-hook 'tern-mode)
        (add-to-list 'company-backends 'company-tern))
    #+END_SRC
-
+*** Vue JS
+    #+BEGIN_SRC emacs-lisp
+      (use-package vue-mode
+        :ensure t
+        :config
+        (add-to-list 'auto-mode-alist '("\\.vue\\'" . vue-mode)))
+    #+END_SRC
 ** typescript
   #+BEGIN_SRC emacs-lisp
     (defun setup-tide-mode ()
@@ -1655,7 +1735,6 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
          (add-hook hook 'rainbow-mode))
        )
    #+END_SRC
-
 
 ** Flycheck
    Read this : http://www.flycheck.org/en/latest/user/quickstart.html
@@ -1958,10 +2037,9 @@ While we're here, let's also increase recentf's items
 ** winner-mode
    Winner mode is an Emacs built-in package that lets you undo and redo window
    configurations. Incredibly useful since I keep splitting and merging windows
-  all the time. Let’s enable it.
+   all the time. Let’s enable it.
    #+BEGIN_SRC emacs-lisp
-     (when (fboundp 'winner-mode)
-       (winner-mode 1))
+     (winner-mode 1)
    #+END_SRC
 
 ** Toggle zoom
@@ -2030,13 +2108,14 @@ While we're here, let's also increase recentf's items
   enough that I rarely use it (and forget it when I need it). This binds the
   easier-to-type =C-c C-v= and =C-c v= to useful searches.
 
+  counsel-projectile-find-file left aside for now
+
   #+BEGIN_SRC emacs-lisp
     (use-package projectile
       :ensure t
-      :bind* (("M-m SPC d"   . projectile-find-file)
-              ("M-m SPC D"   . projectile-switch-project)
-              ("M-m SPC TAB" . projectile-find-other-file)
-              ("M-m SPC f"  . counsel-projectile-find-file))
+      :bind* (("M-m p f"   . projectile-find-file)
+              ("M-m p p"   . projectile-switch-project)
+              ("M-m p TAB" . projectile-find-other-file))
 
       :bind (("C-c C-p" . projectile-command-map))
 
@@ -2056,13 +2135,11 @@ While we're here, let's also increase recentf's items
 
 *** modalka bindings
     #+BEGIN_SRC emacs-lisp
-;      (modalka-define-kbd "SPC d"   "M-m SPC d")
-      (modalka-define-kbd "SPC p"   "M-m SPC D")
-      (modalka-define-kbd "SPC TAB" "M-m SPC TAB")
-      (modalka-define-kbd "SPC f"   "M-m SPC f")
+      (modalka-define-kbd "SPC d"   "M-m p f")
+      (modalka-define-kbd "SPC p"   "M-m p p")
+      (modalka-define-kbd "SPC TAB" "M-m p TAB")
 
       (which-key-add-key-based-replacements
-        "SPC d"   "project files"
         "SPC p"   "project switch"
         "SPC TAB" "alternate file"
         "SPC f"   "open-file in project")
