@@ -9,36 +9,35 @@
 
 
    #+BEGIN_SRC emacs-lisp
-  (setq custom-file (expand-file-name "custom.el"
-  user-emacs-directory))
-  (when (file-exists-p custom-file)
-    (load custom-file))
+     (setq custom-file (expand-file-name "custom.el"
+     user-emacs-directory))
+     (when (file-exists-p custom-file)
+       (load custom-file))
    #+END_SRC
 
 ** Use sensible-defaults.el
+   Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
 
-Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
-
-#+BEGIN_SRC emacs-lisp
-  (load-file "~/.emacs.d/sensible-defaults.el")
-  (sensible-defaults/use-all-settings)
-  (sensible-defaults/use-all-keybindings)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/sensible-defaults.el")
+     (sensible-defaults/use-all-settings)
+     (sensible-defaults/use-all-keybindings)
+   #+END_SRC
 ** local paths
-#+BEGIN_SRC emacs-lisp
-(defvar user-emacs-cache-directory
-(concat (getenv "HOME") "/.cache/emacs"))
-(add-to-list 'exec-path (concat (getenv "HOME") "/.config/composer/vendor/bin"))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (defvar user-emacs-cache-directory
+       (concat (getenv "HOME") "/.cache/emacs"))
+     (add-to-list 'exec-path (concat (getenv "HOME") "/.config/composer/vendor/bin"))
+   #+END_SRC
 ** Set personal information
 
-#+BEGIN_SRC emacs-lisp
-  (setq user-full-name "Mikael Kermorgant"
-        user-mail-address "mikael@kgtech.fi"
-        calendar-latitude 59.97
-        calendar-longitude 23.44
-        calendar-location-name "Raseborg, Finland")
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (setq user-full-name "Mikael Kermorgant"
+           user-mail-address "mikael@kgtech.fi"
+           calendar-latitude 59.97
+           calendar-longitude 23.44
+           calendar-location-name "Raseborg, Finland")
+   #+END_SRC
 
 ** backups
    #+BEGIN_SRC emacs-lisp
@@ -66,12 +65,10 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
      (savehist-mode)
    #+END_SRC
 ** cursor
-#+BEGIN_SRC emacs-lisp
-;; Bar cursor
-(setq-default cursor-type '(bar . 1))
-;; Don't blink the cursor
-(blink-cursor-mode -1)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (setq-default cursor-type '(bar . 1))
+     (blink-cursor-mode -1)
+   #+END_SRC
 ** Bind key to some unbound defaults
    #+BEGIN_SRC emacs-lisp
      (bind-keys*
@@ -1612,6 +1609,17 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
       (define-key geben-mode-map (kbd "<f11>") 'geben-step-into)
       (define-key geben-mode-map (kbd "S-<f11>") 'geben-step-out)))
   #+END_SRC
+
+**** flycheck
+     #+BEGIN_SRC emacs-lisp
+       (require 'flycheck)
+       (flycheck-define-checker php-phpcs
+         "A PHP syntax checker using PHP_CodeSniffer.
+           See URL `http://pear.php.net/package/PHP_CodeSniffer/'."
+         :command ("phpcs" "--report=checkstyle" source)
+         :error-parser flycheck-parse-checkstyle
+         :modes php-mode)
+     #+END_SRC
 ** Web-mode
    #+BEGIN_SRC emacs-lisp
      (use-package web-mode
