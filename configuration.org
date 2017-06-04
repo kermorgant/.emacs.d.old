@@ -1990,7 +1990,6 @@ While we're here, let's also increase recentf's items
           ))
    #+END_SRC
 
-
 ** Terminal
    #+BEGIN_SRC emacs-lisp
         (require 'multi-term)
@@ -2012,16 +2011,26 @@ While we're here, let's also increase recentf's items
 
 ** Custom solarized-dark theme
 
-
    #+BEGIN_SRC emacs-lisp
-     (when window-system
-       (setq solarized-use-variable-pitch nil)
-       (setq solarized-height-plus-1 1.0)
-       (setq solarized-height-plus-2 1.0)
-       (setq solarized-height-plus-3 1.0)
-       (setq solarized-height-plus-4 1.0)
-       (setq solarized-high-contrast-mode-line t)
+     (setq solarized-use-variable-pitch nil)
+     (setq solarized-height-plus-1 1.0)
+     (setq solarized-height-plus-2 1.0)
+     (setq solarized-height-plus-3 1.0)
+     (setq solarized-height-plus-4 1.0)
+     (setq solarized-high-contrast-mode-line t)
+
+     (if (daemonp)
+         (add-hook 'after-make-frame-functions
+                   (lambda (frame)
+                     (with-selected-frame frame
+                       (load-theme 'solarized-dark t))))
        (load-theme 'solarized-dark t))
+
+     ;; (add-hook 'after-init-hook
+     ;;           (lambda ()
+     ;;             (when window-system (load-theme 'solarized-dark t))))
+
+
    #+END_SRC
 
 ** Highlight the current line
