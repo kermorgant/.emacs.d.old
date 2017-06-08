@@ -104,6 +104,11 @@
 * modalka
 
   #+BEGIN_SRC emacs-lisp
+    (defun exit-on-esc ()
+      (interactive)
+      (modalka-mode 1))
+;      (insert-char 32))
+
     (use-package modalka
       :ensure t
       :demand t
@@ -112,7 +117,8 @@
       :init
       (setq modalka-cursor-type 'box)
       :config
-      (global-set-key (kbd "<escape>") #'modalka-mode)
+ ;     (global-set-key (kbd "<escape>") #'modalka-mode)
+      (global-set-key (kbd "<escape>") #'exit-on-esc)
       (modalka-global-mode 1)
       (add-to-list 'modalka-excluded-modes 'magit-status-mode)
       (add-to-list 'modalka-excluded-modes 'magit-popup-mode)
