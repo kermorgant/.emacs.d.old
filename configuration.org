@@ -959,7 +959,7 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
        (modalka-mode 0))
    #+END_SRC
 
-   Key binding, Modal binding & Which key modal explanation
+   Key binding, ** Modal binding & Which key modal explanation
 
    #+BEGIN_SRC emacs-lisp
      (bind-keys*
@@ -1067,7 +1067,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        )
    #+END_SRC
 
-   Modal documentation and which-key explanations
+   ** Modal documentation and which-key explanations
    #+BEGIN_SRC emacs-lisp
      (modalka-define-kbd "SPC i" "M-m SPC i")
      (modalka-define-kbd "SPC I" "M-m SPC I")
@@ -1140,7 +1140,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        (which-key-add-key-based-replacements
          "M-m m" "move prefix"))
    #+END_SRC
-*** Modal bindings
+*** ** Modal bindings
     #+BEGIN_SRC emacs-lisp
       (modalka-define-kbd "m j" "M-m m j")
       (modalka-define-kbd "m k" "M-m m k")
