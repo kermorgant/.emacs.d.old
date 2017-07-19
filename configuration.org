@@ -9,36 +9,35 @@
 
 
    #+BEGIN_SRC emacs-lisp
-  (setq custom-file (expand-file-name "custom.el"
-  user-emacs-directory))
-  (when (file-exists-p custom-file)
-    (load custom-file))
+     (setq custom-file (expand-file-name "custom.el"
+     user-emacs-directory))
+     (when (file-exists-p custom-file)
+       (load custom-file))
    #+END_SRC
 
 ** Use sensible-defaults.el
+   Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
 
-Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for some basic settings.
-
-#+BEGIN_SRC emacs-lisp
-  (load-file "~/.emacs.d/sensible-defaults.el")
-  (sensible-defaults/use-all-settings)
-  (sensible-defaults/use-all-keybindings)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (load-file "~/.emacs.d/sensible-defaults.el")
+     (sensible-defaults/use-all-settings)
+     (sensible-defaults/use-all-keybindings)
+   #+END_SRC
 ** local paths
-#+BEGIN_SRC emacs-lisp
-(defvar user-emacs-cache-directory
-(concat (getenv "HOME") "/.cache/emacs"))
-(add-to-list 'exec-path (concat (getenv "HOME") "/.config/composer/vendor/bin"))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (defvar user-emacs-cache-directory
+       (concat (getenv "HOME") "/.cache/emacs"))
+     (add-to-list 'exec-path (concat (getenv "HOME") "/.config/composer/vendor/bin"))
+   #+END_SRC
 ** Set personal information
 
-#+BEGIN_SRC emacs-lisp
-  (setq user-full-name "Mikael Kermorgant"
-        user-mail-address "mikael@kgtech.fi"
-        calendar-latitude 59.97
-        calendar-longitude 23.44
-        calendar-location-name "Raseborg, Finland")
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (setq user-full-name "Mikael Kermorgant"
+           user-mail-address "mikael@kgtech.fi"
+           calendar-latitude 59.97
+           calendar-longitude 23.44
+           calendar-location-name "Raseborg, Finland")
+   #+END_SRC
 
 ** backups
    #+BEGIN_SRC emacs-lisp
@@ -66,12 +65,10 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
      (savehist-mode)
    #+END_SRC
 ** cursor
-#+BEGIN_SRC emacs-lisp
-;; Bar cursor
-(setq-default cursor-type '(bar . 1))
-;; Don't blink the cursor
-(blink-cursor-mode -1)
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (setq-default cursor-type '(bar . 1))
+     (blink-cursor-mode -1)
+   #+END_SRC
 ** Bind key to some unbound defaults
    #+BEGIN_SRC emacs-lisp
      (bind-keys*
@@ -107,6 +104,11 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
 * modalka
 
   #+BEGIN_SRC emacs-lisp
+    (defun exit-on-esc ()
+      (interactive)
+      (modalka-mode 1))
+;      (insert-char 32))
+
     (use-package modalka
       :ensure t
       :demand t
@@ -115,7 +117,8 @@ Use [[https://github.com/hrs/sensible-defaults.el][sensible-defaults.el]] for so
       :init
       (setq modalka-cursor-type 'box)
       :config
-      (global-set-key (kbd "<escape>") #'modalka-mode)
+ ;     (global-set-key (kbd "<escape>") #'modalka-mode)
+      (global-set-key (kbd "<escape>") #'exit-on-esc)
       (modalka-global-mode 1)
       (add-to-list 'modalka-excluded-modes 'magit-status-mode)
       (add-to-list 'modalka-excluded-modes 'magit-popup-mode)
@@ -1612,6 +1615,17 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
       (define-key geben-mode-map (kbd "<f11>") 'geben-step-into)
       (define-key geben-mode-map (kbd "S-<f11>") 'geben-step-out)))
   #+END_SRC
+
+**** flycheck
+     #+BEGIN_SRC emacs-lisp
+       (require 'flycheck)
+       (flycheck-define-checker php-phpcs
+         "A PHP syntax checker using PHP_CodeSniffer.
+           See URL `http://pear.php.net/package/PHP_CodeSniffer/'."
+         :command ("phpcs" "--report=checkstyle" source)
+         :error-parser flycheck-parse-checkstyle
+         :modes php-mode)
+     #+END_SRC
 ** Web-mode
    #+BEGIN_SRC emacs-lisp
      (use-package web-mode
@@ -1982,7 +1996,6 @@ While we're here, let's also increase recentf's items
           ))
    #+END_SRC
 
-
 ** Terminal
    #+BEGIN_SRC emacs-lisp
         (require 'multi-term)
@@ -2004,16 +2017,26 @@ While we're here, let's also increase recentf's items
 
 ** Custom solarized-dark theme
 
-
    #+BEGIN_SRC emacs-lisp
-     (when window-system
-       (setq solarized-use-variable-pitch nil)
-       (setq solarized-height-plus-1 1.0)
-       (setq solarized-height-plus-2 1.0)
-       (setq solarized-height-plus-3 1.0)
-       (setq solarized-height-plus-4 1.0)
-       (setq solarized-high-contrast-mode-line t)
+     (setq solarized-use-variable-pitch nil)
+     (setq solarized-height-plus-1 1.0)
+     (setq solarized-height-plus-2 1.0)
+     (setq solarized-height-plus-3 1.0)
+     (setq solarized-height-plus-4 1.0)
+     (setq solarized-high-contrast-mode-line t)
+
+     (if (daemonp)
+         (add-hook 'after-make-frame-functions
+                   (lambda (frame)
+                     (with-selected-frame frame
+                       (load-theme 'solarized-dark t))))
        (load-theme 'solarized-dark t))
+
+     ;; (add-hook 'after-init-hook
+     ;;           (lambda ()
+     ;;             (when window-system (load-theme 'solarized-dark t))))
+
+
    #+END_SRC
 
 ** Highlight the current line
