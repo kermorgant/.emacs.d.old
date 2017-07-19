@@ -2202,13 +2202,27 @@ While we're here, let's also increase recentf's items
   #+END_SRC
 * Online help
 ** how do I ?
-#+BEGIN_SRC emacs-lisp
-  (use-package howdoi
-    :ensure t
-    :bind* (("M-m g Y"   . howdoi-query)
-            ("M-m SPC y" . howdoi-query-line-at-point)
-            ("M-m SPC Y" . howdoi-query-insert-code-snippet-at-point)))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package howdoi
+       :ensure t
+       :bind* (("M-m g Y"   . howdoi-query)
+               ("M-m SPC y" . howdoi-query-line-at-point)
+               ("M-m SPC Y" . howdoi-query-insert-code-snippet-at-point)))
+   #+END_SRC
+*** Modal binding
+    #+BEGIN_SRC emacs-lisp
+      (modalka-define-kbd "g Y" "M-m g Y")
+      (modalka-define-kbd "SPC y" "M-m SPC y")
+      (modalka-define-kbd "SPC Y" "M-m SPC Y")
+    #+END_SRC
+
+    Which key modal explanation
+    #+BEGIN_SRC emacs-lisp
+      (which-key-add-key-based-replacements
+        "g Y" "howdoi query"
+        "SPC y" "howdoi query line"
+        "SPC Y" "howdoi query insert code")
+    #+END_SRC
 ** Stack Exchange
    #+BEGIN_SRC emacs-lisp
   (use-package sx :ensure t)
