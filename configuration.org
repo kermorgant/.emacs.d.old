@@ -973,20 +973,20 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
        (modalka-mode 0))
    #+END_SRC
 
-   Key binding, Modal binding & Which key modal explanation
+*** Modal binding & Which key modal explanation
 
-   #+BEGIN_SRC emacs-lisp
-     (bind-keys*
-      ("M-m c" . sk/change-region)
-      ("M-m C" . sk/change-rest-of-line))
+    #+BEGIN_SRC emacs-lisp
+      (bind-keys*
+       ("M-m c" . sk/change-region)
+       ("M-m C" . sk/change-rest-of-line))
 
-     (modalka-define-kbd "c" "M-m c")
-     (modalka-define-kbd "C" "M-m C")
+      (modalka-define-kbd "c" "M-m c")
+      (modalka-define-kbd "C" "M-m C")
 
-     (which-key-add-key-based-replacements
-       "c" "change region"
-       "C" "change rest of line")
-   #+END_SRC
+      (which-key-add-key-based-replacements
+        "c" "change region"
+        "C" "change rest of line")
+    #+END_SRC
 ** subword
    #+BEGIN_SRC emacs-lisp
      (subword-mode 1)
@@ -1084,7 +1084,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        )
    #+END_SRC
 
-   Modal documentation and which-key explanations
+   ** Modal documentation and which-key explanations
    #+BEGIN_SRC emacs-lisp
      (modalka-define-kbd "SPC i" "M-m SPC i")
      (modalka-define-kbd "SPC I" "M-m SPC I")
@@ -1121,6 +1121,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
    #+BEGIN_SRC emacs-lisp
      (modalka-define-kbd "-" "M-m -")
    #+END_SRC
+
 
    #+BEGIN_SRC emacs-lisp
      (which-key-add-key-based-replacements
@@ -2224,13 +2225,27 @@ While we're here, let's also increase recentf's items
   #+END_SRC
 * Online help
 ** how do I ?
-#+BEGIN_SRC emacs-lisp
-  (use-package howdoi
-    :ensure t
-    :bind* (("M-m g Y"   . howdoi-query)
-            ("M-m SPC y" . howdoi-query-line-at-point)
-            ("M-m SPC Y" . howdoi-query-insert-code-snippet-at-point)))
-#+END_SRC
+   #+BEGIN_SRC emacs-lisp
+     (use-package howdoi
+       :ensure t
+       :bind* (("M-m g Y"   . howdoi-query)
+               ("M-m SPC y" . howdoi-query-line-at-point)
+               ("M-m SPC Y" . howdoi-query-insert-code-snippet-at-point)))
+   #+END_SRC
+*** Modal binding
+    #+BEGIN_SRC emacs-lisp
+      (modalka-define-kbd "g Y" "M-m g Y")
+      (modalka-define-kbd "SPC y" "M-m SPC y")
+      (modalka-define-kbd "SPC Y" "M-m SPC Y")
+    #+END_SRC
+
+    Which key modal explanation
+    #+BEGIN_SRC emacs-lisp
+      (which-key-add-key-based-replacements
+        "g Y" "howdoi query"
+        "SPC y" "howdoi query line"
+        "SPC Y" "howdoi query insert code")
+    #+END_SRC
 ** Stack Exchange
    #+BEGIN_SRC emacs-lisp
   (use-package sx :ensure t)
