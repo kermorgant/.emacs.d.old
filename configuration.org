@@ -28,6 +28,12 @@
      (defvar user-emacs-cache-directory
        (concat (getenv "HOME") "/.cache/emacs"))
      (add-to-list 'exec-path (concat (getenv "HOME") "/.config/composer/vendor/bin"))
+
+     (use-package exec-path-from-shell
+       :ensure t
+     :config
+     (exec-path-from-shell-initialize)
+     )
    #+END_SRC
 ** Set personal information
 
@@ -107,6 +113,10 @@
     (defun exit-on-esc ()
       (interactive)
       (modalka-mode 1))
+    (defun enter-insert ()
+      (interactive)
+      (modalka-mode 0))
+
 ;      (insert-char 32))
 
     (use-package modalka
@@ -491,8 +501,8 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
 ** Task and org-capture management
 
 #+BEGIN_SRC emacs-lisp
-  (setq org-index-file "~/foretag/Dropbox/org/index.org")
-  (setq org-learned-file "~/foretag/Dropbox/org/til.org")
+  (setq org-index-file "~/ownCloud/DropboxKgtech/org/index.org")
+  (setq org-learned-file "~/ownCloud/DropboxKgtech/org/til.org")
   (setq org-agenda-files (list org-index-file))
   (setq org-log-done 'time)
 #+END_SRC
@@ -814,7 +824,7 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
   (setq save-abbrevs t)              ;; save abbrevs when files are saved
 #+END_SRC
 ** markdown
-   #+BEGIN_SRC noemacs-lisp
+   #+BEGIN_SRC emacs-lisp
      (use-package markdown-mode
        :ensure t
        :init
@@ -943,6 +953,7 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
    #+END_SRC
 ** Change region/till end of line
 
+
    Being almost always in Modalka mode implies I have to toggle it after deleting a region if I want to overwrite it. These functions, similar to the Vi style commands, let me delete and start typing in one swoop.
 
    #+BEGIN_SRC emacs-lisp
@@ -976,7 +987,10 @@ Emacs has the built-in DocView mode which lets me view Pdfs.
        "c" "change region"
        "C" "change rest of line")
    #+END_SRC
-
+** subword
+   #+BEGIN_SRC emacs-lisp
+     (subword-mode 1)
+   #+END_SRC
 * built-in browser
   #+BEGIN_SRC emacs-lisp
     (use-package eww
@@ -1097,52 +1111,63 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        )
    #+END_SRC
 ** code folding
+
    #+BEGIN_SRC emacs-lisp
      (use-package origami :ensure t
        :commands (origami-toggle-node)
        :bind* (("M-m -" . origami-toggle-node)))
    #+END_SRC
 
-** smartparens
    #+BEGIN_SRC emacs-lisp
-     (use-package smartparens
-       :ensure t
-       :bind* (("M-m m j" . sp-down-sexp)
-               ("M-m m k" . sp-backward-up-sexp)
-               ("M-m m h" . sp-backward-down-sexp)
-               ("M-m m l" . sp-up-sexp)
-               ("M-m m f" . sp-forward-sexp)
-               ("M-m m b" . sp-backward-sexp)
-               ("M-m m a" . sp-beginning-of-sexp)
-               ("M-m m e" . sp-end-of-sexp)
-               ("M-m m n" . sp-next-sexp)
-               ("M-m m p" . sp-previous-sexp)
-               ("M-m m >" . sp-forward-barf-sexp)
-               ("M-m m <" . sp-backward-barf-sexp)
-               ("M-m m )" . sp-forward-slurp-sexp)
-               ("M-m m (" . sp-backward-slurp-sexp)
-               ("M-m m x" . sp-transpose-sexp)
-               ("M-m m d" . sp-kill-sexp)
-               ("M-m m y" . sp-copy-sexp)
-               ("M-m m u" . sp-unwrap-sexp)
-               ("M-m m U" . sp-backward-unwrap-sexp)
-               ("M-m m C" . sp-convolute-sexp)
-               ("M-m m r" . sp-raise-sexp)
-               ("M-m m s" . sp-split-sexp)
-               ("M-m m S" . sp-splice-sexp)
-               ("M-m m F" . sp-splice-sexp-killing-forward)
-               ("M-m m B" . sp-splice-sexp-killing-backward)
-               ("M-m m A" . sp-splice-sexp-killing-around))
-       :diminish smartparens-mode
-       :diminish smartparens-strict-mode
-       :config
-       (require 'smartparens-config)
-       (smartparens-global-mode)
-       (smartparens-global-strict-mode)
-       (show-smartparens-global-mode)
-       (which-key-add-key-based-replacements
-         "M-m m" "move prefix"))
+     (modalka-define-kbd "-" "M-m -")
    #+END_SRC
+
+   #+BEGIN_SRC emacs-lisp
+     (which-key-add-key-based-replacements
+       "-" "syntax-based fold toggle")
+   #+END_SRC
+
+** smartparens
+    #+BEGIN_SRC emacs-lisp
+           (use-package smartparens
+             :ensure t
+             :bind* (("M-m m j" . sp-down-sexp)
+                     ("M-m m k" . sp-backward-up-sexp)
+                     ("M-m m h" . sp-backward-down-sexp)
+                     ("M-m m l" . sp-up-sexp)
+                     ("M-m m f" . sp-forward-sexp)
+                     ("M-m m b" . sp-backward-sexp)
+                     ("M-m m a" . sp-beginning-of-sexp)
+                     ("M-m m e" . sp-end-of-sexp)
+                     ("M-m m n" . sp-next-sexp)
+                     ("M-m m p" . sp-previous-sexp)
+                     ("M-m m >" . sp-forward-barf-sexp)
+                     ("M-m m <" . sp-backward-barf-sexp)
+                     ("M-m m )" . sp-forward-slurp-sexp)
+                     ("M-m m (" . sp-backward-slurp-sexp)
+                     ("M-m m x" . sp-transpose-sexp)
+                     ("M-m m d" . sp-kill-sexp)
+                     ("M-m m y" . sp-copy-sexp)
+                     ("M-m m u" . sp-unwrap-sexp)
+                     ("M-m m U" . sp-backward-unwrap-sexp)
+                     ("M-m m C" . sp-convolute-sexp)
+                     ("M-m m r" . sp-raise-sexp)
+                     ("M-m m s" . sp-split-sexp)
+                     ("M-m m S" . sp-splice-sexp)
+                     ("M-m m F" . sp-splice-sexp-killing-forward)
+                     ("M-m m B" . sp-splice-sexp-killing-backward)
+                     ("M-m m A" . sp-splice-sexp-killing-around))
+             :diminish smartparens-mode
+             :diminish smartparens-strict-mode
+             :init
+             (require 'smartparens-config)
+             (smartparens-global-strict-mode t)
+             (smartparens-global-mode t)
+ ;            (smartparens-strict-mode)
+             (show-smartparens-global-mode)
+             (which-key-add-key-based-replacements
+               "M-m m" "move prefix"))
+    #+END_SRC
 *** Modal bindings
     #+BEGIN_SRC emacs-lisp
       (modalka-define-kbd "m j" "M-m m j")
@@ -1489,79 +1514,78 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 
 **** php-mode + hooks
      #+BEGIN_SRC emacs-lisp
-              ;(use-package php-eldoc :ensure t)
+                                               ;(use-package php-eldoc :ensure t)
 
-              (use-package ede-php-autoload :ensure t)
+       (use-package ede-php-autoload :ensure t)
 
-              (use-package highlight-symbol :ensure t)
+       (use-package highlight-symbol :ensure t)
 
-              (defun configure-php-mode ()
-                "Set up all of my PHP mode preferences."
-                (require 'newcomment)
-                (setq auto-fill-function 'do-auto-fill)
-                (setq flycheck-disabled-checkers '(php-phpmd))
+       (use-package php-refactor-mode :ensure t)
 
-                (when (boundp 'company-backends)
-                  (setq-local company-backends
+       (defun configure-php-mode ()
+         "Set up all of my PHP mode preferences."
+         (require 'newcomment)
+         (setq auto-fill-function 'do-auto-fill)
+         (setq flycheck-disabled-checkers '(php-phpmd))
+
+         (when (boundp 'company-backends)
+           (setq-local company-backends
                        '((company-dabbrev-code
-       ;                   php-extras-company
+                                               ;                   php-extras-company
                           company-gtags
                           company-etags
                           company-keywords
-                          ;company-ac-php-backend
+                                               ;company-ac-php-backend
                           ))))
 
-                ;(when (fboundp 'php-extras-eldoc-documentation-function)
-                ;  (add-function :before-until (local 'eldoc-documentation-function)
-                ;                'php-extras-eldoc-documentation-function))
+                                               ;(when (fboundp 'php-extras-eldoc-documentation-function)
+                                               ;  (add-function :before-until (local 'eldoc-documentation-function)
+                                               ;                'php-extras-eldoc-documentation-function))
 
-                ;(eldoc-mode t)
-                (highlight-symbol-mode)
-                (auto-fill-mode 0)
-                (add-to-list 'write-file-functions 'delete-trailing-whitespace)
-                ;(require 'ede)
-                ;(global-ede-mode t)
-                (ggtags-mode t)
-                (ggtags-navigation-mode-cleanup but 1)
-                (yas-minor-mode t)
-                (origami-mode)
+                                               ;(eldoc-mode t)
+         (highlight-symbol-mode)
+         (auto-fill-mode 0)
+         (add-to-list 'write-file-functions 'delete-trailing-whitespace)
+                                               ;(require 'ede)
+                                               ;(global-ede-mode t)
+         (ggtags-mode t)
+         (ggtags-navigation-mode-cleanup but 1)
+         (yas-minor-mode t)
+         (origami-mode)
 
-                )
+         )
 
-              (defun my-php-mode-hook ()
-                (setq indent-tabs-mode nil)
-                (setq c-basic-offset 4)
-                (setq php-template-compatibility nil)
-                (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
-                (subword-mode 1)
-                (smartparens-mode t)
-                (php-enable-symfony2-coding-style)
-              )
+       (defun my-php-mode-hook ()
+         (setq indent-tabs-mode nil)
+         (setq c-basic-offset 4)
+         (setq php-template-compatibility nil)
+         (setq php-manual-path "/usr/local/share/php/php-chunked-xhtml/")
+         (php-enable-symfony2-coding-style)
+         )
 
-              (use-package php-mode
-                :ensure t
-                :init
-                (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
-                (add-hook 'php-mode-hook 'my-php-mode-hook)
-                (add-hook 'php-mode-hook 'configure-php-mode)
-                (add-hook 'php-mode-hook 'ede-php-autoload-mode)
-                (with-eval-after-load 'php-mode
-                  (require 'php-current)
-                  (define-key php-mode-map (kbd "C-c C--") 'php-current-class)
-                  (define-key php-mode-map (kbd "C-c C-=") 'php-current-namespace))
-                )
+       (use-package php-mode
+         :ensure t
+         :init
+         (setq auto-mode-alist (append '(("\.php$" . php-mode)) auto-mode-alist))
+         (add-hook 'php-mode-hook 'my-php-mode-hook)
+         (add-hook 'php-mode-hook 'configure-php-mode)
+         (add-hook 'php-mode-hook 'ede-php-autoload-mode)
+         (with-eval-after-load 'php-mode
+           (define-key php-mode-map (kbd "C-c C--") 'php-current-class)
+           (define-key php-mode-map (kbd "C-c C-=") 'php-current-namespace))
+         )
 
-              (use-package company-php
-                :ensure t
-                :config
-                (progn
-                  (add-hook 'php-mode-hook
-                            '(lambda ()
-                               (unless (executable-find "ctags")
-                                 (error "Program: ctags is missing"))
-                               (company-mode t)))
-                  )
-                )
+       (use-package company-php
+         :ensure t
+         :config
+         (progn
+           (add-hook 'php-mode-hook
+                     '(lambda ()
+                        (unless (executable-find "ctags")
+                          (error "Program: ctags is missing"))
+                        (company-mode t)))
+           )
+         )
      #+END_SRC
 
      config stolen here : https://github.com/ejmr/php-mode/issues/256
@@ -1659,24 +1683,26 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
 ** Javascript
    https://afsmnghr.github.io/emacs/angular/
    #+BEGIN_SRC emacs-lisp
-     (use-package js2-mode :ensure t :defer ;TODO:
+     (use-package js2-mode
+       :ensure t
+       :defer ;TODO:
        :mode (("\\.js\\'" . js2-mode)
               ("\\.json\\'" . javascript-mode))
        :commands js2-mode
-       :init (progn
-               (setq-default js2-basic-offset 2
-                             js2-indent-switch-body t
-                             js2-auto-indent-p t
-                             js2-global-externs '("angular")
-                             js2-indent-on-enter-key t
-;                             flycheck-disabled-checkers '(javascript-jshint)
-;                             flycheck-checkers '(javascript-eslint)
-                             flycheck-eslintrc "~/.eslintrc"))
-               (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode))
-               ;(add-to-list 'js2-mode-hook 'flycheck-mode)
-               ;(add-to-list 'js2-mode-hook 'smartparens-mode)
-             )
+       :init
+       (progn
+         (setq-default js2-basic-offset 2
+                       js2-indent-switch-body t
+                       js2-auto-indent-p t
+                       js2-global-externs '("angular")
+                       js2-indent-on-enter-key t
+                       flycheck-disabled-checkers '(javascript-jshint javascript-jscs)
+                       js2-mode-show-strict-warnings nil
+                       flycheck-eslintrc "~/.eslintrc"))
+       (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode)))
    #+END_SRC
+   ;(add-to-list 'js2-mode-hook 'flycheck-mode)
+   ;(add-to-list 'js2-mode-hook 'smartparens-mode)
 
    configure auto-complete with tern
    #+BEGIN_SRC emacs-lisp
@@ -1686,7 +1712,7 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        (add-to-list 'company-backends 'company-tern))
    #+END_SRC
 *** Vue JS
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC noemacs-lisp
       (use-package vue-mode
         :ensure t
         :config
@@ -1774,6 +1800,22 @@ https://www.emacswiki.org/emacs/CompanyMode#toc8
        (add-hook 'flycheck-mode-hook 'flycheck-pos-tip-mode)
      )
    #+END_SRC
+
+** vuejs config
+   #+BEGIN_SRC emacs-lisp
+     (use-package multi-web-mode
+       :ensure t
+       :init
+       (require 'multi-web-mode)
+       (setq mweb-default-major-mode 'web-mode)
+       (setq mweb-tags '((php-mode "<\\?php\\|<\\? \\|<\\?=" "\\?>")
+                         (js-mode "<script +\\(type=\"text/javascript\"\\|language=\"javascript\"\\)[^>]*>" "</script>")
+                         (css-mode "<style +type=\"text/css\"[^>]*>" "</style>")))
+       (setq mweb-filename-extensions '("vue"))
+       (multi-web-global-mode 1)
+     )
+
+   #+END_SRC
 * git
 ** magit
    magit rocks !
@@ -1817,7 +1859,7 @@ https://www.gnu.org/software/emacs/manual/html_node/ediff/
 #+END_SRC
 * Sysadmin
 ** tramp mode
-   #+BEGIN_SRC emacs-lisp
+   #+BEGIN_SRC noemacs-lisp
      (setq tramp-default-method "ssh"
            tramp-backup-directory-alist backup-directory-alist
            tramp-ssh-controlmaster-options "ssh")
@@ -2072,49 +2114,6 @@ While we're here, let's also increase recentf's items
   :ensure t
   :bind* (("M-m Z" . zoom-window-zoom)))
 #+END_SRC
-
-** ido
-*** ido itself
-    #+BEGIN_SRC noemacs-lisp
-      (ido-mode 1)
-      (ido-everywhere 1)
-    #+END_SRC
-
-*** ido ubiquitous
-    #+BEGIN_SRC noemacs-lisp
-      (use-package ido-ubiquitous
-        :ensure t
-        :init
-        (ido-ubiquitous-mode 1)
-      )
-    #+END_SRC
-
-*** vertical mode
-    Makes ido-mode display vertically.
-    #+BEGIN_SRC noemacs-lisp
-      (require 'ido-vertical-mode)
-      (ido-mode 1)
-      (ido-vertical-mode 1)
-      ;(setq ido-vertical-define-keys 'C-n-and-C-p-only)
-      (setq ido-vertical-define-keys 'C-n-C-p-up-and-down)
-    #+END_SRC
-*** flx-ido
-    #+BEGIN_SRC noemacs-lisp
-      (require 'flx-ido)
-
-      (flx-ido-mode 1)
-      ; disable ido faces to see flx highlights.
-      (setq ido-enable-flex-matching t)
-      (setq ido-use-faces nil)
-    #+END_SRC
-** buffers
-   #+BEGIN_SRC emacs-lisp
-     (use-package ace-jump-mode
-       :ensure t
-       :init
-        (setq ajb-bs-configuration "projectile")
-       )
-   #+END_SRC
 
 * Projectile + perspective
 ** perspective
